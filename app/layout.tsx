@@ -12,7 +12,9 @@ const fontSans = Inter({
 const fontDisplay = Syne({
   subsets: ["latin"],
   variable: "--font-display",
-  display: "swap",
+  display: "block",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {

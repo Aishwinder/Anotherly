@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useMemo, useRef } from "react";
+
+export type JellyRevealVariant = "default" | "lift" | "drift" | "zoom";
 
 type Props = {
   children: ReactNode;
@@ -9,12 +11,19 @@ type Props = {
   delay?: number;
   /** Max scroll-linked vertical drift (px) — tied to element scroll progress. */
   parallax?: number;
+  /** Motion character — kept subtle for performance (transform + opacity only). */
+  variant?: JellyRevealVariant;
 };
+
+/** Easier to trigger so scroll reveals read clearly on the page */
+const viewportOpts = { once: true as const, margin: "0px 0px -6% 0px" as const, amount: 0.03 as const };
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
 
 /**
  * Scroll-triggered reveal + optional scroll-linked Y drift (Framer useScroll → useTransform).
  */
-export function JellyReveal({ children, className = "", delay = 0, parallax = 0 }: Props) {
+export function JellyReveal({ children, className = "", delay = 0, parallax = 0, variant = "default" }: Props) {
   const reduce = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -29,26 +38,52 @@ export function JellyReveal({ children, className = "", delay = 0, parallax = 0 
     reduce || !parallax ? [0, 0] : [parallax * 0.72, -parallax * 0.72],
   );
   const useParallaxMotion = Boolean(parallax) && !reduce;
-  const initial = reduce
-    ? undefined
-    : useParallaxMotion
-      ? { opacity: 0, scale: 0.985 }
-      : { opacity: 0, y: 22, scale: 0.985 };
-  const whileInView = reduce
-    ? undefined
-    : useParallaxMotion
-      ? { opacity: 1, scale: 1 }
-      : { opacity: 1, y: 0, scale: 1 };
+
+  const preset = useMemo(() => {
+    if (reduce) {
+      return { initial: undefined, whileInView: undefined };
+    }
+    if (useParallaxMotion) {
+      return {
+        initial: { opacity: 0, y: 32, scale: 0.988 } as const,
+        whileInView: { opacity: 1, y: 0, scale: 1 } as const,
+      };
+    }
+    switch (variant) {
+      case "lift":
+        return {
+          initial: { opacity: 0, y: 40, scale: 0.986 } as const,
+          whileInView: { opacity: 1, y: 0, scale: 1 } as const,
+        };
+      case "drift":
+        return {
+          initial: { opacity: 0, y: 22, x: -14 } as const,
+          whileInView: { opacity: 1, y: 0, x: 0 } as const,
+        };
+      case "zoom":
+        return {
+          initial: { opacity: 0, y: 16, scale: 0.965 } as const,
+          whileInView: { opacity: 1, y: 0, scale: 1 } as const,
+        };
+      default:
+        return {
+          initial: { opacity: 0, y: 30, scale: 0.988 } as const,
+          whileInView: { opacity: 1, y: 0, scale: 1 } as const,
+        };
+    }
+  }, [reduce, useParallaxMotion, variant]);
+
+  const duration = variant === "lift" ? 0.52 : variant === "zoom" ? 0.48 : 0.46;
 
   const inner = (
     <motion.div
-      initial={initial}
-      whileInView={whileInView}
-      viewport={{ once: true, margin: "-12% 0px -12% 0px", amount: 0.1 }}
+      initial={preset.initial}
+      whileInView={preset.whileInView}
+      viewport={viewportOpts}
       transition={{
-        duration: 0.58,
+        duration,
         delay,
-        ease: [0.16, 1, 0.3, 1],
+        ease: easeOut,
       }}
       style={{
         willChange: reduce ? undefined : "transform, opacity",
@@ -71,13 +106,13 @@ export function JellyReveal({ children, className = "", delay = 0, parallax = 0 
     <motion.div
       ref={trackRef}
       className={className}
-      initial={initial}
-      whileInView={whileInView}
-      viewport={{ once: true, margin: "-12% 0px -12% 0px", amount: 0.1 }}
+      initial={preset.initial}
+      whileInView={preset.whileInView}
+      viewport={viewportOpts}
       transition={{
-        duration: 0.58,
+        duration,
         delay,
-        ease: [0.16, 1, 0.3, 1],
+        ease: easeOut,
       }}
       style={{ willChange: reduce ? undefined : "transform, opacity" }}
     >

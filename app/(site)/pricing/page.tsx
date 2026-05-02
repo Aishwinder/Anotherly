@@ -90,6 +90,11 @@ export default function PricingPage() {
                   {plan.estimate}
                 </p>
                 <p className="mt-2 text-sm text-[var(--text-muted)]">{plan.lead}</p>
+                <ul className="jelly-tier-includes">
+                  {plan.includes.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>

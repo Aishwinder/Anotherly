@@ -1,4 +1,5 @@
 import { JellyReveal } from "@/components/jelly/JellyReveal";
+import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftGrid, PageCraftMotif } from "@/components/jelly/PageCraftMotif";
 import { bundleDiscountCopy, mainServices, websiteCarePlans } from "@/lib/services-detail";
 import { Globe, Megaphone, Palette } from "lucide-react";
@@ -21,8 +22,9 @@ export default function ServicesPage() {
   return (
     <div className="jelly-page-pad relative overflow-hidden">
       <PageCraftGrid className="opacity-[0.06]" />
+      <JellySectionGeo variant="arc" className="jelly-section-geo--services" />
       <div className="relative z-[1]">
-        <JellyReveal>
+        <JellyReveal variant="lift">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">Services</p>

@@ -27,7 +27,7 @@ export type CarePlan = {
 };
 
 export const bundleDiscountCopy =
-  "Bundle any 2 services → 15% off. All 3 services → 25% off + we waive the first month on Care Lite when you launch with us.";
+  "Bundle any 2 services → 15% off. All 3 services → 25% off + we waive the first month on your Care Lite plan when you launch with us.";
 
 const unlimited = "Unlimited revisions until you sign off — we iterate until it feels right." as const;
 
@@ -159,38 +159,38 @@ export const mainServices: readonly ServiceBlock[] = [
 export const websiteCarePlans: readonly CarePlan[] = [
   {
     name: "Care Lite",
-    estimate: "from $149/mo",
-    lead: "Keep the lights on — updates, backups, and someone to ping when something looks off.",
+    estimate: "$40/mo",
+    lead: "Essential upkeep — your site stays secure, monitored, and easy to tweak in small ways.",
     includes: [
-      "Monthly CMS / dependency + security patches",
-      "Hosting & SSL monitoring with 99.9% uptime target (on our stack)",
-      "1 small change request / month (copy, image swap, minor layout — ~1h)",
-      "Quarterly performance & broken-link sweep",
-      "Email support within 2 business days",
+      "Hosting + SSL monitoring on our recommended stack",
+      "Monthly core / CMS / dependency security patches",
+      "Weekly automated backups + restore sanity check quarterly",
+      "One small tweak per month (copy, hero image swap, FAQ line — capped at ~30 min)",
+      "Email support — reply within 3 business days",
     ],
   },
   {
     name: "Care Pro",
-    estimate: "from $349/mo",
-    lead: "For sites that sell — proactive tuning plus room for real iteration.",
+    estimate: "$100/mo",
+    lead: "Room to iterate — proactive checks plus real design/dev time each month.",
     includes: [
       "Everything in Care Lite",
-      "Up to 4h/mo design or dev time — sections, A/B ideas, campaign landers",
-      "Priority support (next business day)",
-      "Analytics snapshot + one improvement recommendation monthly",
-      "Staging previews before anything hits production",
+      "Up to 2 hrs/mo combined design + front-end dev (landing sections, new block, polish)",
+      "Quarterly Lighthouse + SEO hygiene report with one prioritized fix shipped",
+      "Staging previews before production deploys when changes touch layout or components",
+      "Priority email support — reply within 1–2 business days",
     ],
   },
   {
     name: "Care Partner",
-    estimate: "from $690/mo",
-    lead: "Embedded studio hours for teams shipping every week.",
+    estimate: "$150/mo",
+    lead: "For teams publishing often — predictable hours and a tighter feedback loop.",
     includes: [
       "Everything in Care Pro",
-      "10h/mo combined strategy, design, and engineering",
-      "Slack / async channel for faster questions",
-      "Roadmap call every month + shared task board",
-      "Rollover up to 4 unused hours once (fair use)",
+      "Up to 4 hrs/mo strategy, UI, content structure, or implementation as agreed each month",
+      "Shared task board access + monthly 25-min roadmap touchpoint",
+      "Async chat channel for scoped questions during business hours (Slack preferred)",
+      "One urgent hotfix escalation per quarter for critical breakage (within scope)",
     ],
   },
 ] as const;

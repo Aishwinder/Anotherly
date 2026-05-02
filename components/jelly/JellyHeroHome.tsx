@@ -53,10 +53,9 @@ export function JellyHeroHome() {
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         >
           We do it{" "}
-          <span className="jelly-hero-anotherly-gradient" data-text="anotherly">
-            anotherly
+          <span className="jelly-hero-anotherly-gradient" data-text="anotherly!">
+            anotherly!
           </span>
-          .
         </motion.h1>
 
         <motion.p

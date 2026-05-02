@@ -13,16 +13,30 @@ export function useLenisRoot() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
+    /** Native scroll on narrow viewports — smoother + less main-thread work than Lenis + touch. */
+    const narrow = window.matchMedia("(max-width: 640px)").matches;
+    if (reduce || narrow) return;
 
     const lenis = new Lenis({
-      lerp: 0.14,
-      wheelMultiplier: 0.92,
-      touchMultiplier: 0.94,
+      lerp: 0.22,
+      wheelMultiplier: 1.12,
+      touchMultiplier: 1.06,
       smoothWheel: true,
       syncTouch: true,
+      syncTouchLerp: 0.16,
     });
     lenisRef.current = lenis;
+
+    let bridgeQueued = false;
+    const bridgeScroll = () => {
+      if (bridgeQueued) return;
+      bridgeQueued = true;
+      requestAnimationFrame(() => {
+        bridgeQueued = false;
+        window.dispatchEvent(new CustomEvent("jelly-lenis-scroll"));
+      });
+    };
+    const unLenisScroll = lenis.on("scroll", bridgeScroll);
 
     let raf = 0;
     const tick = (t: number) => {
@@ -32,6 +46,7 @@ export function useLenisRoot() {
     raf = requestAnimationFrame(tick);
 
     return () => {
+      unLenisScroll();
       cancelAnimationFrame(raf);
       lenis.destroy();
       lenisRef.current = null;

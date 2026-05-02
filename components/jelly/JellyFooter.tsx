@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function JellyFooter() {
   return (
-    <footer className="jelly-site-footer mt-auto border-t border-[var(--glass-border)] px-5 py-6 sm:px-6">
+    <footer className="jelly-site-footer rounded-b-[clamp(22px,3.8vw,30px)] border-t border-[var(--glass-border)] px-5 py-6 sm:px-6">
       <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-4">
         <p className="text-center text-xs text-[var(--text-muted)] sm:text-left">
           © 2026 Anotherly Studio ·{" "}

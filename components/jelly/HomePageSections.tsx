@@ -6,6 +6,7 @@ import { bundleDiscountCopy, mainServices, websiteCarePlans } from "@/lib/servic
 import { homeTestimonials, serviceSnapshotCards } from "@/lib/home-content";
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { HomeHowWeWork } from "@/components/jelly/HomeHowWeWork";
+import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftMotif } from "@/components/jelly/PageCraftMotif";
 
 const snapshotIcons = {
@@ -24,10 +25,11 @@ export function HomePageSections() {
       <HomeHowWeWork />
 
       <section
-        className="jelly-section jelly-home-at-a-glance pb-2"
+        className="jelly-section jelly-home-at-a-glance relative overflow-hidden pb-2"
         aria-labelledby="quick-capabilities-heading"
       >
-        <JellyReveal>
+        <JellySectionGeo variant="arc" />
+        <JellyReveal className="relative z-[1]" variant="lift">
           <p className="jelly-section-eyebrow">At a glance</p>
           <h2 id="quick-capabilities-heading" className="jelly-section-title">
             Branding, websites, marketing
@@ -40,7 +42,7 @@ export function HomePageSections() {
             .
           </p>
         </JellyReveal>
-        <ul className="mt-10 grid grid-rows-[1fr] gap-5 sm:grid-cols-3 sm:gap-6 sm:items-stretch">
+        <ul className="jelly-snapshot-grid relative z-[1] mt-10 grid grid-rows-[1fr] gap-5 sm:grid-cols-3 sm:gap-6 sm:items-stretch">
           {serviceSnapshotCards.map((card, i) => {
             const Icon = snapshotIcons[card.icon];
             return (
@@ -71,11 +73,12 @@ export function HomePageSections() {
       </section>
 
       <section
-        className="jelly-section jelly-home-services-pricing"
+        className="jelly-section jelly-home-services-pricing relative overflow-hidden"
         id="services-pricing"
         aria-labelledby="services-pricing-heading"
       >
-        <JellyReveal>
+        <JellySectionGeo variant="lines" />
+        <JellyReveal className="relative z-[1]" variant="drift">
           <p className="jelly-section-eyebrow">Services &amp; pricing</p>
           <h2 id="services-pricing-heading" className="jelly-section-title">
             Clear packages. Honest ballparks.
@@ -85,9 +88,9 @@ export function HomePageSections() {
           </p>
         </JellyReveal>
 
-        <div className="mt-8 flex flex-col gap-10 sm:gap-12">
+        <div className="relative z-[1] mt-8 flex flex-col gap-10 sm:gap-12">
           {mainServices.map((s, si) => (
-            <JellyReveal key={s.id} delay={si * 0.03}>
+            <JellyReveal key={s.id} delay={si * 0.03} variant={si % 2 === 0 ? "default" : "zoom"}>
               <div
                 className={[
                   "jelly-home-service-block pt-8 sm:pt-10",
@@ -135,8 +138,8 @@ export function HomePageSections() {
           ))}
         </div>
 
-        <JellyReveal>
-          <div className="relative mt-10 overflow-hidden rounded-[1.15rem] border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--bg-glass)_58%,transparent)] p-6 sm:p-8">
+        <JellyReveal variant="lift">
+          <div className="relative z-[1] mt-10 overflow-hidden rounded-[1.15rem] border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--bg-glass)_58%,transparent)] p-6 sm:p-8">
             <PageCraftMotif className="pointer-events-none absolute -right-4 top-4 h-auto w-[min(12rem,40vw)] text-[var(--accent-indigo)] opacity-[0.2]" />
             <p className="jelly-section-eyebrow">After launch</p>
             <h3 className="font-display mt-2 text-lg font-bold text-[var(--ink)] sm:text-xl">Care &amp; subscriptions</h3>
@@ -175,8 +178,9 @@ export function HomePageSections() {
         </JellyReveal>
       </section>
 
-      <section className="jelly-section" aria-labelledby="testimonials-heading">
-        <JellyReveal>
+      <section className="jelly-section relative overflow-hidden" aria-labelledby="testimonials-heading">
+        <JellySectionGeo variant="lines" className="jelly-section-geo--testimonials" />
+        <JellyReveal className="relative z-[1]" variant="zoom">
           <p className="jelly-section-eyebrow">Testimonials</p>
           <h2 id="testimonials-heading" className="jelly-section-title">
             In their words
@@ -185,9 +189,9 @@ export function HomePageSections() {
             Clients who trusted us with how their brand feels in the world.
           </p>
         </JellyReveal>
-        <ul className="jelly-testimonials-grid mt-12 grid max-w-none gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="jelly-testimonials-grid relative z-[1] mt-12 grid max-w-none gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {homeTestimonials.map((t, i) => (
-            <JellyReveal key={`${t.name}-${i}`}>
+            <JellyReveal key={`${t.name}-${i}`} variant="default" delay={i * 0.04}>
               <li className="jelly-quote-card h-full">
                 <p className="jelly-quote-mark" aria-hidden>
                   “
@@ -203,10 +207,11 @@ export function HomePageSections() {
         </ul>
       </section>
 
-      <section className="jelly-section jelly-studio-band" id="studio" aria-labelledby="studio-heading">
+      <section className="jelly-section jelly-studio-band relative overflow-hidden" id="studio" aria-labelledby="studio-heading">
         <div className="jelly-craft-grid-bg" />
+        <JellySectionGeo variant="arc" className="jelly-section-geo--studio-accent" />
         <div className="relative z-[1] flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <JellyReveal className="min-w-0 flex-1">
+          <JellyReveal className="min-w-0 flex-1" variant="drift">
             <p className="jelly-section-eyebrow">Studio</p>
             <h2 id="studio-heading" className="jelly-section-title">
               Anotherly Studio

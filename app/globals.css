@@ -4,9 +4,9 @@
 /* === Exact light / dark palettes — `data-theme` on <html> (next-themes) === */
 html[data-theme="light"] {
   color-scheme: light;
-  --bg-page: #f5f7fc;
-  /* Translucent shell — blur does the “frost”; keep alpha low so art shows through */
-  --bg-glass: rgba(255, 255, 255, 0.56);
+  --bg-page: #eef2fb;
+  /* Glass — airy; main slab uses layered whites on top */
+  --bg-glass: rgba(255, 255, 255, 0.22);
   --text-primary: #1c2233;
   --text-muted: rgba(28, 34, 51, 0.56);
   --accent-teal: #00b8a8;
@@ -18,8 +18,8 @@ html[data-theme="light"] {
   --cream-deep: #e8ecf4;
   --ink: var(--text-primary);
   --line-soft: rgba(28, 34, 51, 0.08);
-  --glass-surface: rgba(255, 255, 255, 0.38);
-  --glass-border: rgba(28, 34, 51, 0.14);
+  --glass-surface: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(40, 56, 92, 0.14);
   --glass-inner: rgba(255, 255, 255, 0.55);
   --panel-shadow: 0 24px 70px rgba(28, 34, 51, 0.08), 0 8px 26px rgba(28, 34, 51, 0.05);
   --focus-ring: var(--accent-indigo);
@@ -27,8 +27,9 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  --bg-page: #0b0e1a;
-  --bg-glass: rgba(28, 34, 51, 0.52);
+  --bg-page: #0a0d16;
+  /* Deep ink (not mid-gray); cards pick up same tint */
+  --bg-glass: rgba(10, 12, 22, 0.52);
   --text-primary: #f0f4ff;
   --text-muted: rgba(240, 244, 255, 0.55);
   --accent-teal: #00d9c8;
@@ -40,7 +41,7 @@ html[data-theme="dark"] {
   --cream-deep: #06080f;
   --ink: var(--text-primary);
   --line-soft: rgba(240, 244, 255, 0.1);
-  --glass-surface: rgba(28, 34, 51, 0.5);
+  --glass-surface: rgba(18, 22, 36, 0.62);
   --glass-border: rgba(240, 244, 255, 0.18);
   --glass-inner: rgba(255, 255, 255, 0.08);
   --panel-shadow: 0 28px 80px rgba(0, 0, 0, 0.45), 0 10px 30px rgba(0, 0, 0, 0.35);
@@ -56,17 +57,20 @@ html[data-theme="dark"] {
 
 html {
   scroll-behavior: auto;
-  background: var(--bg-page);
+  background: var(--cream-deep);
   transition: background-color 0.2s cubic-bezier(0.33, 1, 0.68, 1);
   /* Prevent layout jump when scrollbars appear/disappear (content height, Lenis, etc.) */
   scrollbar-gutter: stable;
   overflow-y: auto;
   overflow-x: clip;
+  overscroll-behavior-y: contain;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   min-height: 100dvh;
-  background: var(--bg-page);
+  background: var(--cream-deep);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -101,6 +105,8 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  /* Avoid fixed-attachment seams / odd bands at scroll extremes (desktop zoom, overscroll). */
+  background-attachment: scroll;
   transform: translateZ(0);
   opacity: 0;
   transition: opacity 0.26s cubic-bezier(0.33, 1, 0.68, 1);
@@ -110,15 +116,20 @@ body {
   opacity: 1;
 }
 
-@media (min-width: 900px) {
+/* Portrait phones: rotate plate 90° so landscape art fills without stretch */
+@media (max-width: 767px) and (orientation: portrait) {
   .jelly-bg-photo {
-    background-attachment: fixed;
-  }
-}
-
-@media (max-width: 899px), (prefers-reduced-motion: reduce) {
-  .jelly-bg-photo {
-    background-attachment: scroll;
+    inset: auto;
+    left: 50%;
+    top: 50%;
+    width: 100vh;
+    height: 100vw;
+    min-width: 100vh;
+    min-height: 100vw;
+    transform: translate(-50%, -50%) translateZ(0) rotate(90deg);
+    transform-origin: center center;
+    background-size: cover;
+    background-position: center;
   }
 }
 
@@ -128,48 +139,64 @@ body {
   pointer-events: none;
   background: linear-gradient(
     165deg,
-    color-mix(in srgb, var(--bg-page) 55%, transparent) 0%,
-    color-mix(in srgb, var(--accent-indigo) 8%, transparent) 45%,
-    color-mix(in srgb, var(--accent-teal) 6%, transparent) 100%
-  );
-  opacity: 0.32;
-  transition: opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-/* Main glass panel — iOS-style frosted jelly */
-.jelly-main-panel {
-  position: relative;
-  z-index: 2;
-  border-radius: clamp(22px, 3.8vw, 30px);
-  background: var(--bg-glass);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(28px) saturate(1.45);
-  -webkit-backdrop-filter: blur(28px) saturate(1.45);
-  transition:
-    background-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    box-shadow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--glass-inner) 55%, transparent) inset,
-    0 1px 0 color-mix(in srgb, #fff 40%, transparent) inset,
-    0 0 0 1px color-mix(in srgb, var(--accent-teal) 16%, transparent),
-    0 0 56px color-mix(in srgb, var(--accent-indigo) 18%, transparent),
-    var(--panel-shadow);
-}
-
-.jelly-main-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(
-    100% 70% at 12% -10%,
-    color-mix(in srgb, var(--accent-indigo) 14%, #fff) 0%,
-    transparent 62%
+    color-mix(in srgb, var(--bg-page) 88%, #c5d4ee) 0%,
+    color-mix(in srgb, var(--bg-page) 55%, transparent) 100%
   );
   opacity: 0.28;
   transition: opacity 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+html[data-theme="dark"] .jelly-bg-wash {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--bg-page) 75%, #1a2540) 0%, transparent 100%);
+  opacity: 0.35;
+}
+
+/* Main glass panel — white frost stack + blur; light/dark tuned for similar separation from wallpaper */
+.jelly-main-panel {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: clamp(22px, 3.8vw, 30px);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.13) 44%,
+      rgba(255, 255, 255, 0.04) 100%
+    ),
+    linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, transparent 52%),
+    rgba(255, 255, 255, 0.24);
+  background-clip: padding-box;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 78%, transparent);
+  backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  transition:
+    border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    box-shadow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.28) inset,
+    0 20px 48px rgba(28, 34, 51, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.jelly-main-panel::before {
+  display: none;
+}
+
+html[data-theme="dark"] .jelly-main-panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200, 210, 255, 0.09) 0%,
+      rgba(255, 255, 255, 0.03) 46%,
+      transparent 100%
+    ),
+    linear-gradient(125deg, rgba(160, 175, 255, 0.06) 0%, transparent 56%),
+    rgba(5, 7, 14, 0.58);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+    0 22px 56px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
 
 .jelly-main-panel > * {
@@ -177,53 +204,627 @@ body {
   z-index: 1;
 }
 
-/* Header chrome — padded, translucent, never transformed by scroll */
+/* Header — brighter frost strip; blur unchanged vs main slab */
 .jelly-panel-header {
-  padding: 1rem 1.25rem 0.9rem;
+  position: relative;
+  z-index: 40;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: clamp(22px, 3.8vw, 30px) clamp(22px, 3.8vw, 30px) 0 0;
+  border: none;
   border-bottom: 1px solid var(--glass-border);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--bg-glass) 65%, transparent) 0%,
-    color-mix(in srgb, var(--bg-glass) 18%, transparent) 72%,
-    transparent 100%
-  );
-  backdrop-filter: blur(22px) saturate(1.35);
-  -webkit-backdrop-filter: blur(22px) saturate(1.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.12) 100%);
+  backdrop-filter: blur(2.75px) saturate(1.03);
+  -webkit-backdrop-filter: blur(2.75px) saturate(1.03);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--glass-inner) 45%, transparent) inset;
   transition:
     border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    background 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    box-shadow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-/* Soft flowing light + bokeh behind the glass panel (GPU-friendly transforms / opacity only) */
+/* Same language as light — soft white veil, flatter (no strong blue→ink ramp) */
+html[data-theme="dark"] .jelly-panel-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--glass-inner) 32%, transparent) inset;
+}
+
+.jelly-panel-header__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.85rem 1rem 0.85rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .jelly-panel-header__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.95rem 1.25rem 0.95rem 1.25rem;
+  }
+}
+
+.jelly-panel-header__actions {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+@media (min-width: 640px) {
+  .jelly-panel-header__actions {
+    flex: 0 1 auto;
+    max-width: 100%;
+  }
+}
+
+/* Work page — slightly denser slab vs home (same frost language) */
+.jelly-main-panel.jelly-main-panel--projects-dense {
+  --bg-glass: rgba(255, 255, 255, 0.26);
+  --glass-surface: rgba(255, 255, 255, 0.58);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.44) 0%,
+      rgba(255, 255, 255, 0.16) 42%,
+      rgba(255, 255, 255, 0.05) 100%
+    ),
+    linear-gradient(125deg, rgba(255, 255, 255, 0.2) 0%, transparent 52%),
+    rgba(255, 255, 255, 0.3);
+}
+
+html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
+  --bg-glass: rgba(8, 10, 18, 0.62);
+  --glass-surface: rgba(20, 24, 38, 0.68);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(200, 210, 255, 0.11) 0%,
+      rgba(255, 255, 255, 0.04) 44%,
+      transparent 100%
+    ),
+    linear-gradient(125deg, rgba(160, 175, 255, 0.07) 0%, transparent 54%),
+    rgba(6, 8, 16, 0.68);
+}
+
+/* Site chrome — comfortable space below footer (capped at 1in) */
+.jelly-site-chrome {
+  padding-bottom: min(
+    1in,
+    max(1.25rem, calc(0.55in + env(safe-area-inset-bottom, 0px)))
+  );
+}
+
+.jelly-site-chrome--fab-active .jelly-panel-main {
+  padding-bottom: max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4.25rem));
+}
+
+@media (min-width: 640px) {
+  .jelly-site-chrome--fab-active .jelly-panel-main {
+    padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.5rem));
+  }
+}
+
+/* Work page — stream headers above each carousel */
+.jelly-projects-stream__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  align-items: flex-start;
+  margin-bottom: 1.35rem;
+}
+
+.jelly-projects-stream__rule {
+  flex: 1 0 100%;
+  width: 100%;
+  min-height: 3px;
+  border-radius: 999px;
+}
+
+.jelly-projects-stream__titles {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.jelly-projects-stream__count {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+@media (min-width: 640px) {
+  .jelly-projects-stream__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    flex-wrap: nowrap;
+    gap: 1rem 1.25rem;
+    align-items: start;
+  }
+
+  .jelly-projects-stream__rule {
+    flex: none;
+    width: 4px;
+    min-height: 3.25rem;
+    margin-top: 0.2rem;
+  }
+
+  .jelly-projects-stream__titles {
+    flex: none;
+  }
+
+  .jelly-projects-stream__count {
+    margin-left: 0;
+  }
+}
+
+.jelly-projects-stream__rule--branding {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent-orange) 88%, transparent),
+    color-mix(in srgb, var(--accent-indigo) 35%, transparent)
+  );
+}
+
+.jelly-projects-stream__rule--website {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent-teal) 82%, transparent),
+    color-mix(in srgb, var(--accent-indigo) 40%, transparent)
+  );
+}
+
+.jelly-projects-stream__label {
+  margin: 0;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.65rem, 3.2vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.jelly-projects-stream__lede {
+  margin: 0.45rem 0 0;
+  max-width: 36rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ink) 72%, var(--text-muted));
+}
+
+.jelly-projects-stream__count {
+  margin: 0;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 62%, transparent);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--accent-indigo) 6%, transparent);
+}
+
+.jelly-projects-stream--branding .jelly-projects-stream__count {
+  border-color: color-mix(in srgb, var(--accent-orange) 22%, var(--glass-border));
+}
+
+.jelly-projects-stream--websites .jelly-projects-stream__count {
+  border-color: color-mix(in srgb, var(--accent-teal) 22%, var(--glass-border));
+}
+
+/* Projects — vertical stack: one case card per row, plain page scroll */
+.jelly-projects-stream-stack {
+  position: relative;
+  z-index: 1;
+}
+
+.jelly-projects-stream-stack__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.jelly-project-case {
+  position: relative;
+  z-index: 1;
+  border-radius: 1.35rem;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 72%, transparent);
+  background-clip: padding-box;
+  backdrop-filter: blur(10px) saturate(1);
+  -webkit-backdrop-filter: blur(10px) saturate(1);
+  padding: clamp(1.15rem, 3vw, 1.75rem);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 38%, transparent) inset,
+    0 14px 44px color-mix(in srgb, var(--accent-indigo) 6%, transparent);
+  transition:
+    transform 0.28s cubic-bezier(0.33, 1, 0.32, 1),
+    box-shadow 0.28s ease,
+    border-color 0.22s ease;
+}
+
+.jelly-project-case--branding {
+  border-color: color-mix(in srgb, var(--accent-orange) 18%, var(--glass-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 38%, transparent) inset,
+    0 14px 44px color-mix(in srgb, var(--accent-orange) 7%, transparent);
+}
+
+.jelly-project-case--website {
+  border-color: color-mix(in srgb, var(--accent-teal) 18%, var(--glass-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 38%, transparent) inset,
+    0 14px 44px color-mix(in srgb, var(--accent-teal) 6%, transparent);
+}
+
+.jelly-project-case::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -35% auto;
+  width: min(22rem, 55vw);
+  height: min(22rem, 55vw);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.14;
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-indigo) 55%, transparent), transparent 68%);
+}
+
+.jelly-project-case--branding::after {
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-orange) 50%, transparent), transparent 68%);
+  opacity: 0.16;
+}
+
+.jelly-project-case--website::after {
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-teal) 48%, transparent), transparent 68%);
+  opacity: 0.15;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .jelly-project-case:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--glass-inner) 42%, transparent) inset,
+      0 14px 40px color-mix(in srgb, var(--accent-indigo) 7%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-project-case:hover {
+    transform: none;
+  }
+}
+
+.jelly-project-case__index {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(2.75rem, 8vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: color-mix(in srgb, var(--ink) 8%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
+.jelly-project-case__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.35rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .jelly-project-case__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  .jelly-project-case--reverse .jelly-project-case__copy {
+    order: 2;
+  }
+
+  .jelly-project-case--reverse .jelly-project-case-gallery {
+    order: 1;
+  }
+}
+
+.jelly-project-case__copy {
+  min-width: 0;
+}
+
+.jelly-project-case__kind {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.jelly-project-case__eyebrow {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.jelly-project-case__title {
+  margin: 0.5rem 2.5rem 0 0;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .jelly-project-case__title {
+    margin-right: 3rem;
+  }
+}
+
+.jelly-project-case__blurb {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ink) 78%, var(--text-muted));
+  max-width: 36rem;
+}
+
+.jelly-project-case__bullets {
+  margin: 0.85rem 0 0;
+  padding: 0 0 0 1.05rem;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--ink) 70%, var(--text-muted));
+}
+
+.jelly-project-case__bullets li::marker {
+  color: color-mix(in srgb, var(--accent-indigo) 55%, var(--text-muted));
+}
+
+.jelly-project-case--branding .jelly-project-case__bullets li::marker {
+  color: color-mix(in srgb, var(--accent-orange) 72%, var(--text-muted));
+}
+
+.jelly-project-case--website .jelly-project-case__bullets li::marker {
+  color: color-mix(in srgb, var(--accent-teal) 75%, var(--text-muted));
+}
+
+.jelly-project-case__foot {
+  margin: 0.85rem 0 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.jelly-project-case__dot {
+  margin-inline: 0.35rem;
+  opacity: 0.45;
+}
+
+/* Per-case gallery — arrows + dots in a clear chrome row */
+.jelly-project-case-gallery {
+  position: relative;
+  min-width: 0;
+  border-radius: 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 92%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 58%, transparent);
+  background-clip: padding-box;
+  overflow: hidden;
+  isolation: isolate;
+  backdrop-filter: blur(8px) saturate(1);
+  -webkit-backdrop-filter: blur(8px) saturate(1);
+  box-shadow: 0 10px 32px color-mix(in srgb, var(--accent-indigo) 7%, transparent);
+}
+
+.jelly-project-case-gallery__viewport {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1.1rem 1.1rem 0 0;
+  contain: paint;
+  isolation: isolate;
+}
+
+.jelly-project-case-gallery__track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.32s cubic-bezier(0.33, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-project-case-gallery__track {
+    transition: none;
+  }
+}
+
+.jelly-project-case-gallery__cell {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.jelly-project-case-gallery__cell-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.jelly-project-case-gallery__cell-bg :is(img, span) {
+  border-radius: inherit;
+}
+
+.jelly-project-case-gallery__chrome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem 0.65rem;
+  border-top: 1px solid color-mix(in srgb, var(--glass-border) 75%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 52%, transparent);
+}
+
+.jelly-project-case-gallery__arrows {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.jelly-project-case-gallery__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 90%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 85%, #fff);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.jelly-project-case-gallery__arrow:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent-teal) 38%, var(--glass-border));
+}
+
+.jelly-project-case-gallery__arrow:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.jelly-project-case--branding .jelly-project-case-gallery__arrow:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent-orange) 42%, var(--glass-border));
+}
+
+.jelly-project-case-gallery__dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  flex: 1 1 auto;
+}
+
+.jelly-project-case-gallery__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  padding: 0;
+  border: none;
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.jelly-project-case-gallery__dot:hover {
+  transform: scale(1.15);
+  background: color-mix(in srgb, var(--accent-indigo) 55%, var(--text-muted));
+}
+
+.jelly-project-case-gallery__dot--on {
+  background: color-mix(in srgb, var(--accent-indigo) 88%, var(--text-muted));
+  transform: scale(1.2);
+}
+
+.jelly-project-case--branding .jelly-project-case-gallery__dot--on {
+  background: color-mix(in srgb, var(--accent-orange) 88%, var(--text-muted));
+}
+
+.jelly-project-case--website .jelly-project-case-gallery__dot--on {
+  background: color-mix(in srgb, var(--accent-teal) 88%, var(--text-muted));
+}
+
+.jelly-project-case-gallery__count {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  min-width: 3rem;
+  text-align: right;
+}
+
+/* Shell wraps panel + ambience — clip children so radii stay clean (no square halos) */
 .jelly-shell-wrap {
   position: relative;
+  overflow: hidden;
+  border-radius: clamp(22px, 3.8vw, 30px);
 }
 
 .jelly-panel-ambience {
   position: absolute;
   z-index: 0;
-  inset: -14px;
+  inset: 0;
   pointer-events: none;
-  overflow: visible;
-  border-radius: clamp(26px, 4.2vw, 34px);
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .jelly-ambience-flow {
   position: absolute;
-  inset: -20%;
+  inset: -12%;
   border-radius: 50%;
   background: conic-gradient(
     from 120deg,
-    color-mix(in srgb, var(--accent-orange) 22%, transparent),
-    color-mix(in srgb, var(--accent-teal) 18%, transparent),
-    color-mix(in srgb, var(--accent-indigo) 20%, transparent),
-    color-mix(in srgb, var(--accent-orange) 16%, transparent),
-    color-mix(in srgb, var(--accent-teal) 18%, transparent)
+    rgba(180, 200, 240, 0.14),
+    rgba(140, 170, 220, 0.12),
+    rgba(200, 215, 250, 0.13),
+    rgba(160, 185, 230, 0.12),
+    rgba(180, 200, 240, 0.14)
   );
-  opacity: 0.62;
-  filter: blur(28px);
+  opacity: 0.5;
+  filter: blur(32px);
   animation: jelly-ambience-drift 22s ease-in-out infinite;
   transform: translateZ(0);
+}
+
+html[data-theme="dark"] .jelly-ambience-flow {
+  background: conic-gradient(
+    from 120deg,
+    rgba(80, 110, 170, 0.12),
+    rgba(50, 70, 120, 0.1),
+    rgba(90, 120, 180, 0.11),
+    rgba(60, 85, 140, 0.1),
+    rgba(80, 110, 170, 0.12)
+  );
+  opacity: 0.42;
 }
 
 .jelly-ambience-bokeh {
@@ -294,28 +895,43 @@ body {
   }
 }
 
-@media (min-width: 640px) {
-  .jelly-panel-header {
-    padding: 1.15rem 1.5rem 1rem;
+/* Panel ambience: static on coarse pointers — frees compositor vs full-site glass */
+@media (hover: none) and (pointer: coarse) {
+  .jelly-ambience-flow,
+  .jelly-ambience-bokeh {
+    animation: none;
+    opacity: 0.36;
+    filter: blur(16px);
+  }
+
+  html[data-theme="dark"] .jelly-ambience-flow {
+    opacity: 0.32;
   }
 }
 
 .jelly-panel-main {
   padding: 0;
+  min-width: 0;
 }
 
 .jelly-page-pad {
-  padding: 1.75rem 1.35rem 2.5rem;
+  padding: 1.75rem 1.35rem 1.35rem;
 }
 
 @media (min-width: 640px) {
   .jelly-page-pad {
-    padding: 2.25rem 2rem 3rem;
+    padding: 2.25rem 2rem 1.6rem;
   }
 }
 
 .jelly-page-pad--projects {
-  padding-bottom: 3.5rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .jelly-page-pad--projects {
+    padding-bottom: 1.15rem;
+  }
 }
 
 /* Work page — scroll-linked index + project stack */
@@ -731,8 +1347,8 @@ body {
   box-shadow:
     0 1px 0 color-mix(in srgb, #fff 35%, transparent) inset,
     0 6px 16px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px) saturate(1.02);
+  -webkit-backdrop-filter: blur(6px) saturate(1.02);
   transition:
     transform 0.2s ease,
     background 0.22s ease,
@@ -1181,8 +1797,9 @@ body {
 }
 
 .jelly-hero--home .jelly-hero-h1 {
-  line-height: 1.14;
-  padding-bottom: 0.06em;
+  line-height: 1.22;
+  padding-bottom: 0.12em;
+  overflow: visible;
 }
 
 .jelly-hero-anotherly-gradient {
@@ -1192,24 +1809,44 @@ body {
     var(--accent-indigo) 42%,
     var(--accent-orange) 88%
   );
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.06em;
+  padding-bottom: 0.18em;
+  padding-right: 0.02em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+  animation: jelly-hero-anotherly-shine 4.5s ease-in-out infinite;
+}
+
+@keyframes jelly-hero-anotherly-shine {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @supports not (background-clip: text) {
   .jelly-hero-anotherly-gradient {
-    color: var(--accent-teal);
+    color: var(--accent-indigo);
     background: none;
+    animation: none;
   }
 }
 
-.jelly-hero--home .jelly-hero-h1,
+@media (prefers-reduced-motion: reduce) {
+  .jelly-hero-anotherly-gradient {
+    animation: none;
+    background-size: 100% 100%;
+  }
+}
+
 .jelly-hero--home .jelly-hero-sub,
 .jelly-hero--home .jelly-hero-ghost {
   animation: none;
@@ -1369,6 +2006,14 @@ body {
   padding: 0.48rem 1.05rem;
   font-size: 0.72rem;
   white-space: nowrap;
+}
+
+/* Reserves header slot when CTA moves to FAB (avoids nav jump) */
+.jelly-header-cta-placeholder {
+  display: inline-block;
+  min-width: 5.5rem;
+  min-height: 2.25rem;
+  flex: 0 0 auto;
 }
 
 .jelly-cta-primary:hover,
@@ -2334,65 +2979,154 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
     0 0 32px color-mix(in srgb, var(--accent-orange) 24%, transparent);
 }
 
-/* Premium chrome: loader, scroll progress, theme toggle, cursor */
+/* Premium chrome: loader, scroll progress, theme toggle */
 .jelly-page-loader {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  background: color-mix(in srgb, var(--bg-page) 82%, transparent);
-  backdrop-filter: blur(18px) saturate(1.15);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
   pointer-events: none;
 }
 
-.jelly-page-loader__wordmark {
-  position: relative;
-  width: 100%;
-  max-width: min(22rem, 88vw);
-  min-height: clamp(3.5rem, 12vw, 4.5rem);
+.jelly-page-loader--v2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  isolation: isolate;
 }
 
-.jelly-page-loader__layer {
+.jelly-page-loader__plate {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.jelly-page-loader__plate-img {
+  position: absolute;
+  inset: -5%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+  will-change: filter;
+}
+
+.jelly-page-loader__plate-dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  z-index: 1;
+  will-change: opacity;
+}
+
+.jelly-page-loader__mark-wrap {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.jelly-page-loader__mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 0.82;
+  font-size: clamp(6.5rem, 24vw, 13.5rem);
+  letter-spacing: -0.06em;
+  text-transform: lowercase;
+}
+
+.jelly-page-loader__letter-base {
+  color: rgba(255, 255, 255, 0.16);
+  text-shadow:
+    0 0 60px rgba(255, 255, 255, 0.12),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.jelly-page-loader__letter-layer {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-}
-
-.jelly-page-loader__word-solid,
-.jelly-page-loader__word-gradient-fill {
-  text-align: center;
-  white-space: nowrap;
-  text-transform: lowercase;
-  transform-origin: center center;
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 700;
-  font-size: clamp(1.5rem, 7vw, 2.65rem);
-  letter-spacing: -0.04em;
   will-change: clip-path;
 }
 
-.jelly-page-loader__word-solid {
-  color: var(--ink);
-}
-
-.jelly-page-loader__word-gradient-fill {
+.jelly-page-loader__letter-fill {
+  display: block;
   background: linear-gradient(
-    12deg,
+    168deg,
     var(--accent-teal) 0%,
-    var(--accent-indigo) 45%,
-    var(--accent-orange) 88%
+    var(--accent-indigo) 42%,
+    var(--accent-orange) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+/* Floating contact — appears after scroll; clears header pill */
+.jelly-talk-fab-wrap {
+  position: fixed;
+  right: max(0.65rem, env(safe-area-inset-right, 0px));
+  bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
+  z-index: 9995;
+  pointer-events: none;
+}
+
+.jelly-talk-fab {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.45rem;
+  height: 3.45rem;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--btn-text);
+  background: var(--btn-bg);
+  border: 1px solid color-mix(in srgb, var(--btn-bg) 50%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 38%, transparent) inset,
+    0 10px 36px color-mix(in srgb, var(--btn-bg) 42%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--accent-indigo) 12%, transparent);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.jelly-talk-fab:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.06);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 45%, transparent) inset,
+    0 14px 44px color-mix(in srgb, var(--btn-bg) 48%, transparent),
+    0 0 40px color-mix(in srgb, var(--accent-orange) 22%, transparent);
+}
+
+.jelly-talk-fab:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.jelly-talk-fab__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-talk-fab:hover,
+  .jelly-talk-fab:active {
+    transform: none;
+  }
 }
 
 .jelly-scroll-progress {
@@ -2497,20 +3231,37 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
   background: color-mix(in srgb, var(--bg-glass) 50%, transparent);
 }
 
+.jelly-cursor-ring {
+  display: none !important;
+  pointer-events: none;
+  z-index: 9997;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent-indigo) 22%, transparent);
+  opacity: 0.2;
+}
+
 .jelly-cursor-dot {
-  display: none;
+  display: none !important;
   pointer-events: none;
   z-index: 9998;
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent-teal) 45%, transparent);
-  opacity: 0.45;
+  border: 1px solid color-mix(in srgb, var(--accent-teal) 48%, transparent);
+  opacity: 0.5;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent-teal) 25%, transparent);
 }
 
-@media (pointer: fine) {
-  .jelly-cursor-dot {
-    display: block;
+@keyframes jelly-cursor-breathe {
+  0%,
+  100% {
+    opacity: 0.14;
+  }
+
+  50% {
+    opacity: 0.3;
   }
 }
 
@@ -2565,16 +3316,17 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
 .jelly-service-snapshot-card {
   position: relative;
   overflow: hidden;
+  contain: layout style paint;
   isolation: isolate;
   border-radius: 1.35rem;
-  padding: 1.35rem 1.35rem 1.25rem;
+  padding: 1.5rem 1.5rem 1.35rem;
   border: 1px solid var(--glass-border);
   background: color-mix(in srgb, var(--bg-glass) 64%, transparent);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--glass-inner) 40%, transparent) inset,
     0 10px 32px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(10px) saturate(1);
+  -webkit-backdrop-filter: blur(10px) saturate(1);
   transition:
     transform 0.35s cubic-bezier(0.34, 1.45, 0.64, 1),
     box-shadow 0.3s ease,
@@ -2584,68 +3336,91 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
 .jelly-service-snapshot-card::before {
   content: "";
   position: absolute;
-  inset: -50%;
+  inset: 0;
+  border-radius: inherit;
   z-index: 0;
   opacity: 0;
   pointer-events: none;
-  filter: blur(38px);
+  /* Tighter than card blur so hover wash stays inside rounded rect */
+  filter: blur(14px);
   transform-origin: center center;
-  transform: rotate(0deg) scale(1.2);
+  transform: none;
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  clip-path: inset(0 round 1.35rem);
 }
 
 .jelly-service-snapshot-card:not(:hover)::before {
   animation: none;
 }
 
-/* Three lanes — distinct abstract fields (no spinning orbits, lighter GPU) */
+/* Three lanes — unmistakable hover languages (still on-brand) */
 .jelly-service-snapshot-card--tone-brand::before {
   background:
-    radial-gradient(ellipse 120% 80% at 0% 100%, color-mix(in srgb, var(--accent-orange) 55%, transparent), transparent 50%),
-    radial-gradient(ellipse 90% 70% at 100% 0%, color-mix(in srgb, var(--accent-teal) 48%, transparent), transparent 55%),
-    linear-gradient(145deg, color-mix(in srgb, #fff 35%, transparent) 0%, transparent 45%);
+    radial-gradient(ellipse 140% 90% at 0% 110%, color-mix(in srgb, var(--accent-orange) 70%, transparent), transparent 52%),
+    radial-gradient(ellipse 100% 80% at 100% -10%, color-mix(in srgb, var(--accent-teal) 58%, transparent), transparent 48%),
+    linear-gradient(118deg, color-mix(in srgb, #fff 40%, transparent) 0%, transparent 50%);
 }
 
 .jelly-service-snapshot-card--tone-brand:hover::before {
-  opacity: 0.72;
+  opacity: 0.88;
+}
+
+.jelly-service-snapshot-card--tone-brand:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 55%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, var(--accent-orange) 32%, transparent),
+    0 10px 28px color-mix(in srgb, var(--accent-orange) 16%, transparent);
 }
 
 .jelly-service-snapshot-card--tone-web::before {
   background:
-    linear-gradient(205deg, color-mix(in srgb, var(--accent-indigo) 50%, transparent) 0%, transparent 42%),
-    radial-gradient(ellipse 100% 90% at 80% 20%, color-mix(in srgb, var(--accent-teal) 42%, transparent), transparent 58%),
+    linear-gradient(168deg, color-mix(in srgb, var(--accent-indigo) 62%, transparent) 0%, transparent 38%),
+    radial-gradient(ellipse 110% 100% at 95% 15%, color-mix(in srgb, var(--accent-teal) 52%, transparent), transparent 55%),
     repeating-linear-gradient(
-      90deg,
-      transparent 0 11px,
-      color-mix(in srgb, var(--accent-indigo) 8%, transparent) 11px 12px
+      -56deg,
+      transparent 0 16px,
+      color-mix(in srgb, var(--accent-indigo) 12%, transparent) 16px 17px
     );
 }
 
 .jelly-service-snapshot-card--tone-web:hover::before {
-  opacity: 0.68;
+  opacity: 0.82;
+}
+
+.jelly-service-snapshot-card--tone-web:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 50%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, var(--accent-indigo) 34%, transparent),
+    0 10px 30px color-mix(in srgb, var(--accent-indigo) 18%, transparent);
 }
 
 .jelly-service-snapshot-card--tone-mark::before {
   background:
-    conic-gradient(
-      from 200deg at 70% 35%,
-      color-mix(in srgb, var(--accent-teal) 40%, transparent),
-      transparent 42%,
-      color-mix(in srgb, var(--accent-orange) 38%, transparent),
-      transparent 68%,
-      color-mix(in srgb, var(--accent-indigo) 36%, transparent),
-      transparent 88%
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent-teal) 45%, transparent) 0%,
+      transparent 34%,
+      color-mix(in srgb, var(--accent-orange) 48%, transparent) 66%,
+      transparent 100%
     ),
-    radial-gradient(ellipse 70% 60% at 20% 80%, color-mix(in srgb, #fff 30%, transparent), transparent 65%);
+    radial-gradient(ellipse 80% 70% at 50% 120%, color-mix(in srgb, var(--accent-indigo) 45%, transparent), transparent 55%),
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, #fff 28%, transparent), transparent 55%);
 }
 
 .jelly-service-snapshot-card--tone-mark:hover::before {
-  opacity: 0.7;
+  opacity: 0.85;
+}
+
+.jelly-service-snapshot-card--tone-mark:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 52%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, var(--accent-teal) 26%, transparent),
+    0 10px 30px color-mix(in srgb, var(--accent-orange) 14%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .jelly-service-snapshot-card:hover::before {
-    opacity: 0.5;
+    opacity: 0.55;
   }
 }
 
@@ -2655,13 +3430,14 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
 }
 
 .jelly-service-snapshot-card:hover {
-  transform: translateY(-3px) scale(1.01);
-  border-color: color-mix(in srgb, #fff 32%, var(--accent-indigo) 28%);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, #fff 55%, transparent) inset,
-    0 0 0 1px color-mix(in srgb, var(--accent-teal) 20%, transparent),
-    0 22px 52px color-mix(in srgb, var(--accent-indigo) 14%, transparent),
-    0 0 40px color-mix(in srgb, #fff 14%, transparent);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, #fff 26%, var(--accent-indigo) 24%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-service-snapshot-card:hover {
+    transform: none;
+  }
 }
 
 .jelly-service-snapshot-card__icon {
@@ -2707,6 +3483,7 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
 }
 
 .jelly-site-footer {
+  flex-shrink: 0;
   background: linear-gradient(0deg, color-mix(in srgb, var(--bg-glass) 35%, transparent), transparent);
 }
 
@@ -2814,4 +3591,671 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, #fff 25%, var(--accent-teal) 30%);
   box-shadow: 0 16px 40px color-mix(in srgb, var(--accent-indigo) 10%, transparent), 0 0 32px color-mix(in srgb, #fff 12%, transparent);
+}
+
+/* —— Work page: horizontal gallery rails —— */
+.jelly-projects-gallery-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.jelly-projects-gallery-section__title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.jelly-projects-gallery-section__subtitle {
+  margin: 0.35rem 0 0;
+  max-width: 28rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.jelly-projects-gallery-section__arrows {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.jelly-projects-gallery-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.65rem;
+  height: 2.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 72%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
+}
+
+.jelly-projects-gallery-arrow:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent-teal) 28%, var(--glass-border));
+  background: color-mix(in srgb, var(--bg-glass) 88%, transparent);
+}
+
+.jelly-projects-gallery-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.jelly-projects-gallery-rail-wrap {
+  margin-inline: -0.35rem;
+  padding-inline: 0.35rem;
+}
+
+@media (min-width: 640px) {
+  .jelly-projects-gallery-rail-wrap {
+    margin-inline: -0.5rem;
+    padding-inline: 0.5rem;
+  }
+}
+
+.jelly-projects-gallery-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.35rem;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-x;
+  scrollbar-width: thin;
+}
+
+.jelly-projects-gallery-rail:active {
+  cursor: grabbing;
+}
+
+.jelly-projects-gallery-slide {
+  flex: 0 0 min(86vw, 420px);
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+@media (min-width: 640px) {
+  .jelly-projects-gallery-slide {
+    flex-basis: min(72vw, 480px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .jelly-projects-gallery-slide {
+    flex-basis: min(52vw, 520px);
+  }
+}
+
+.jelly-projects-gallery-slide__link {
+  display: block;
+  border-radius: 1.35rem;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+}
+
+.jelly-projects-gallery-slide__link:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.jelly-projects-gallery-slide__link:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+.jelly-projects-gallery-slide__visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 1.35rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 82%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 35%, transparent) inset,
+    0 22px 56px color-mix(in srgb, var(--accent-indigo) 14%, transparent);
+}
+
+.jelly-projects-gallery-slide__hero {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.jelly-projects-gallery-slide__film {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.45rem 0.5rem 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  border-top: 1px solid color-mix(in srgb, #fff 12%, transparent);
+}
+
+.jelly-projects-gallery-slide__film::-webkit-scrollbar {
+  height: 4px;
+}
+
+.jelly-projects-gallery-slide__film::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 35%, transparent);
+}
+
+.jelly-projects-gallery-slide__film-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: 0.45rem;
+  overflow: hidden;
+  scroll-snap-align: start;
+  border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+  opacity: 0.92;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.jelly-projects-gallery-slide__link:hover .jelly-projects-gallery-slide__film-thumb {
+  opacity: 1;
+}
+
+.jelly-projects-gallery-slide__film-thumb:focus-within {
+  opacity: 1;
+}
+
+@media (min-width: 640px) {
+  .jelly-projects-gallery-slide__film-thumb {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+}
+
+.jelly-projects-gallery-slide__shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, #fff 16%, transparent) 0%,
+    transparent 42%,
+    color-mix(in srgb, var(--ink) 22%, transparent) 100%
+  );
+  opacity: 0.35;
+}
+
+.jelly-projects-gallery-slide__hero .jelly-projects-gallery-slide__shine {
+  border-radius: 0;
+}
+
+.jelly-projects-gallery-slide__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.15rem 1.2rem 1.2rem;
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--ink) 82%, transparent) 0%,
+    color-mix(in srgb, var(--ink) 22%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+.jelly-projects-gallery-slide__kind {
+  display: inline-block;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 0.35rem;
+}
+
+.jelly-projects-gallery-slide__name {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.jelly-projects-gallery-slide__cat {
+  margin: 0.4rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.jelly-shell-outer {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  min-width: 0;
+}
+
+/* Section geometry (hero-adjacent language) */
+.jelly-section-geo {
+  position: absolute;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--accent-teal) 55%, var(--accent-indigo) 45%);
+  opacity: 0.16;
+  z-index: 0;
+}
+
+html[data-theme="dark"] .jelly-section-geo {
+  opacity: 0.12;
+}
+
+.jelly-section-geo__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.jelly-section-geo--arc {
+  top: -6%;
+  right: -8%;
+  width: min(48vw, 22rem);
+  max-height: 12rem;
+}
+
+.jelly-section-geo--orbit {
+  top: -12%;
+  right: -14%;
+  width: min(56vw, 18rem);
+  max-height: 18rem;
+}
+
+.jelly-section-geo--lines {
+  bottom: -8%;
+  left: -10%;
+  width: min(52vw, 24rem);
+  max-height: 14rem;
+  opacity: 0.12;
+}
+
+.jelly-section-geo--services {
+  top: 0;
+  right: -6%;
+  width: min(46vw, 19rem);
+  max-height: 11rem;
+  opacity: 0.11;
+}
+
+.jelly-section-geo--testimonials {
+  bottom: -14%;
+  left: -6%;
+  right: auto;
+  top: auto;
+  width: min(52vw, 22rem);
+  max-height: 13rem;
+  opacity: 0.1;
+}
+
+.jelly-section-geo--studio-accent {
+  top: -4%;
+  right: -10%;
+  opacity: 0.09;
+}
+
+/* Work page — vertical project stack */
+.jelly-project-vertical-root {
+  position: relative;
+  z-index: 1;
+}
+
+.jelly-project-vertical-root::before {
+  content: "";
+  position: absolute;
+  inset: -1.5rem 0 auto 0;
+  height: min(110%, 72rem);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.042;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--accent-indigo) 38%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent-indigo) 38%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
+}
+
+html[data-theme="dark"] .jelly-project-vertical-root::before {
+  opacity: 0.055;
+}
+
+.jelly-project-vertical-band {
+  position: relative;
+  z-index: 1;
+}
+
+.jelly-section-geo--projects-work {
+  top: 2%;
+  right: -6%;
+  width: min(52vw, 22rem);
+  max-height: 14rem;
+  opacity: 0.26;
+}
+
+.jelly-section-geo--projects-work-lines {
+  bottom: 8%;
+  left: -8%;
+  width: min(56vw, 21rem);
+  max-height: 11rem;
+  opacity: 0.22;
+}
+
+.jelly-section-geo--projects-divider {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(72vw, 28rem);
+  max-height: 9rem;
+  opacity: 0.2;
+}
+
+html[data-theme="dark"] .jelly-section-geo--projects-work,
+html[data-theme="dark"] .jelly-section-geo--projects-work-lines,
+html[data-theme="dark"] .jelly-section-geo--projects-divider {
+  opacity: 0.18;
+}
+
+/* Work page — soft field + corner wash behind content */
+.jelly-projects-work-root {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.jelly-projects-work-canvas {
+  position: absolute;
+  /* Keep wash below the page title — no negative top (was bleeding toward chrome) */
+  top: 0.75rem;
+  left: -5%;
+  right: -5%;
+  height: min(34rem, 78vh);
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 52% 44% at 20% 28%, color-mix(in srgb, var(--accent-teal) 14%, transparent), transparent 62%),
+    radial-gradient(ellipse 48% 40% at 86% 32%, color-mix(in srgb, var(--accent-indigo) 12%, transparent), transparent 58%),
+    radial-gradient(ellipse 38% 34% at 70% 78%, color-mix(in srgb, var(--accent-orange) 10%, transparent), transparent 55%);
+  opacity: 1;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 58%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 58%, transparent 100%);
+}
+
+html[data-theme="dark"] .jelly-projects-work-canvas {
+  background:
+    radial-gradient(ellipse 55% 48% at 18% 12%, color-mix(in srgb, var(--accent-teal) 10%, transparent), transparent 62%),
+    radial-gradient(ellipse 50% 42% at 88% 22%, color-mix(in srgb, var(--accent-indigo) 11%, transparent), transparent 58%),
+    radial-gradient(ellipse 40% 35% at 72% 78%, color-mix(in srgb, var(--accent-orange) 8%, transparent), transparent 55%);
+}
+
+.jelly-projects-work-hero {
+  position: relative;
+  z-index: 1;
+}
+
+.jelly-projects-work-root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.11;
+  background-image: radial-gradient(circle at center, color-mix(in srgb, var(--ink) 22%, transparent) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, #000 12%, transparent 72%);
+}
+
+html[data-theme="dark"] .jelly-projects-work-root::after {
+  opacity: 0.09;
+  background-image: radial-gradient(circle at center, color-mix(in srgb, #fff 18%, transparent) 1px, transparent 1px);
+}
+
+.jelly-snapshot-grid {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+  padding: 0.4rem 0.15rem 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .jelly-snapshot-grid {
+    padding: 0.45rem 0.2rem 0.35rem;
+  }
+}
+
+.jelly-project-vertical-band__intro {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--glass-border) 88%, transparent);
+}
+
+.jelly-project-vertical-band__title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3.2vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.jelly-project-vertical-band__subtitle {
+  margin: 0.5rem 0 0;
+  max-width: 32rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.jelly-project-vertical-band__stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.75rem, 5vw, 3.75rem);
+}
+
+.jelly-project-vertical-card-article {
+  position: relative;
+  z-index: 1;
+}
+
+.jelly-project-vertical-card__link {
+  display: block;
+  border-radius: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s ease;
+}
+
+.jelly-project-vertical-card__link:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.jelly-project-vertical-card__link:hover {
+  transform: translateY(-4px);
+}
+
+.jelly-project-vertical-card {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 85%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 38%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 28%, transparent) inset,
+    0 28px 64px color-mix(in srgb, var(--accent-indigo) 10%, transparent);
+}
+
+.jelly-project-vertical-card__hero {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.jelly-project-vertical-card__hero-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, #fff 14%, transparent) 0%,
+    transparent 38%,
+    color-mix(in srgb, var(--ink) 35%, transparent) 100%
+  );
+  opacity: 0.4;
+}
+
+.jelly-project-vertical-card__hero-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.35rem 1.4rem 1.4rem;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--ink) 88%, transparent) 0%, transparent 100%);
+}
+
+.jelly-project-vertical-card__chip {
+  display: inline-block;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0.4rem;
+}
+
+.jelly-project-vertical-card__title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin: 0;
+  line-height: 1.12;
+}
+
+.jelly-project-vertical-card__cat {
+  margin: 0.45rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.jelly-project-vertical-card__mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+@media (min-width: 640px) {
+  .jelly-project-vertical-card__mosaic {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.jelly-project-vertical-card__mosaic-cell {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.jelly-project-vertical-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 1.15rem;
+  background: color-mix(in srgb, var(--bg-glass) 62%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--glass-border) 70%, transparent);
+}
+
+.jelly-project-vertical-card__year {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.jelly-project-vertical-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+}
+
+/* —— Mobile harmony: spacing, tap targets, no horizontal bleed —— */
+@media (max-width: 639px) {
+  .jelly-page-pad {
+    padding: 1.25rem 0.9rem 1.15rem;
+  }
+
+  .jelly-page-pad--projects {
+    padding-bottom: 0.85rem;
+  }
+
+  .jelly-hero--home.jelly-hero--16x9 {
+    min-height: clamp(14.5rem, 46svh, 22rem);
+    padding: clamp(1rem, 3.5vw, 1.35rem) 0.85rem clamp(0.85rem, 2.5vw, 1.25rem);
+  }
+
+  .jelly-panel-header__inner {
+    gap: 0.65rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .jelly-header-cta {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+  }
+
+  .jelly-nav-pill {
+    min-height: 2.6rem;
+    padding-inline: 0.85rem;
+  }
+
+  .jelly-projects-work-intro__jumps {
+    gap: 0.5rem;
+  }
+
+  .jelly-projects-stream__header {
+    margin-bottom: 1.1rem;
+  }
 }

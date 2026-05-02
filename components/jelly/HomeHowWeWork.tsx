@@ -4,6 +4,7 @@ import type { MotionValue } from "framer-motion";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { howWeWorkSteps } from "@/lib/home-content";
+import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 
 function HowWeWorkStep({
   step,
@@ -22,7 +23,7 @@ function HowWeWorkStep({
   const x = useTransform(
     scrollYProgress,
     [Math.max(0, start - 0.02), Math.min(1, start + 0.16)],
-    reduce ? [0, 0] : [48, 0],
+    reduce ? [0, 0] : [20, 0],
   );
   const opacity = useTransform(
     scrollYProgress,
@@ -54,8 +55,9 @@ export function HomeHowWeWork() {
   const total = howWeWorkSteps.length;
 
   return (
-    <section ref={sectionRef} className="jelly-section" id="how-we-work" aria-labelledby="how-we-work-heading">
-      <div className="jelly-how-work-grid">
+    <section ref={sectionRef} className="jelly-section relative overflow-hidden" id="how-we-work" aria-labelledby="how-we-work-heading">
+      <JellySectionGeo variant="orbit" />
+      <div className="jelly-how-work-grid relative z-[1]">
         <div className="jelly-how-work-main">
           <p className="jelly-section-eyebrow">How we work</p>
           <h2 id="how-we-work-heading" className="jelly-section-title max-w-xl">
