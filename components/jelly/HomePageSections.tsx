@@ -5,6 +5,7 @@ import { Globe, Megaphone, Palette } from "lucide-react";
 import { bundleDiscountCopy, mainServices, websiteCarePlans } from "@/lib/services-detail";
 import { homeTestimonials, serviceSnapshotCards } from "@/lib/home-content";
 import { JellyReveal } from "@/components/jelly/JellyReveal";
+import { HomeFeaturedProjects } from "@/components/jelly/HomeFeaturedProjects";
 import { HomeHowWeWork } from "@/components/jelly/HomeHowWeWork";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftMotif } from "@/components/jelly/PageCraftMotif";
@@ -35,7 +36,7 @@ export function HomePageSections() {
             Branding, websites, marketing
           </h2>
           <p className="jelly-section-lead jelly-section-lead--relaxed max-w-xl">
-            Three lanes, one standard of care — jump to packages below or read the full detail on{" "}
+            Three lanes — brand, web, campaigns — with shared craft. Packages below; full detail on{" "}
             <Link href="/services" className="jelly-inline-svc-link">
               Services
             </Link>
@@ -83,40 +84,50 @@ export function HomePageSections() {
           <h2 id="services-pricing-heading" className="jelly-section-title">
             Clear packages. Honest ballparks.
           </h2>
-          <p className="jelly-section-lead jelly-section-lead--relaxed max-w-2xl">
-            Everything below is a starting point — we confirm scope on a short call before you commit.
+          <p className="jelly-section-lead jelly-section-lead--relaxed max-w-xl">
+            Ballpark pricing — refined on a short call before anything is promised.
           </p>
         </JellyReveal>
 
-        <div className="relative z-[1] mt-8 flex flex-col gap-10 sm:gap-12">
+        <div className="relative z-[1] mt-10 flex max-w-4xl flex-col gap-14 sm:gap-16">
           {mainServices.map((s, si) => (
             <JellyReveal key={s.id} delay={si * 0.03} variant={si % 2 === 0 ? "default" : "zoom"}>
               <div
                 className={[
-                  "jelly-home-service-block pt-8 sm:pt-10",
-                  si > 0 ? "border-t border-[var(--glass-border)]" : "",
+                  "jelly-home-service-block pt-10 sm:pt-12",
+                  si > 0 ? "border-t border-[color-mix(in_srgb,var(--glass-border)_75%,transparent)]" : "",
                 ]
                   .filter(Boolean)
                   .join(" ")}
               >
-                <h3 className="font-display text-xl font-bold tracking-tight text-[var(--ink)] sm:text-2xl">{s.title}</h3>
-                <p className="jelly-section-lead jelly-section-lead--relaxed mt-3 max-w-3xl !text-[0.9375rem]">{s.lead}</p>
+                <h3 className="font-display text-xl font-bold tracking-tight text-[var(--ink)] sm:text-[1.65rem]">
+                  {s.title}
+                </h3>
+                <p className="jelly-section-lead jelly-section-lead--relaxed mt-5 max-w-2xl !text-[0.9375rem]">{s.lead}</p>
 
                 {s.tiers ? (
-                  <ul className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <ul className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
                     {s.tiers.map((t) => (
-                      <li key={t.name} className="jelly-service-tier">
-                        <p className="font-display text-sm font-semibold text-[var(--ink)]">{t.name}</p>
-                        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--accent-teal)]">
-                          {t.estimate}
-                        </p>
-                        <p className="mt-3 text-sm leading-relaxed text-[var(--text-muted)]">{t.note}</p>
+                      <li key={t.name} className="jelly-service-tier jelly-service-tier--airy">
+                        <div className="flex flex-wrap items-baseline gap-x-2">
+                          <p className="font-display text-[0.95rem] font-semibold text-[var(--ink)]">{t.name}</p>
+                          <span className="text-[var(--glass-border)]">·</span>
+                          <p className="text-[0.65rem] font-extrabold uppercase tracking-[0.12em] text-[var(--accent-teal)]">
+                            {t.estimate}
+                          </p>
+                        </div>
+                        <p className="mt-3 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">{t.note}</p>
                         {t.includes?.length ? (
-                          <ul className="jelly-tier-includes">
-                            {t.includes.map((line) => (
-                              <li key={line}>{line}</li>
-                            ))}
-                          </ul>
+                          <details className="jelly-tier-details mt-5">
+                            <summary>Included ({t.includes.length})</summary>
+                            <div className="jelly-tier-details__inner pb-4 pt-1">
+                              <ul className="jelly-tier-includes">
+                                {t.includes.map((line) => (
+                                  <li key={line}>{line}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </details>
                         ) : null}
                       </li>
                     ))}
@@ -139,42 +150,44 @@ export function HomePageSections() {
         </div>
 
         <JellyReveal variant="lift">
-          <div className="relative z-[1] mt-10 overflow-hidden rounded-[1.15rem] border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--bg-glass)_58%,transparent)] p-6 sm:p-8">
-            <PageCraftMotif className="pointer-events-none absolute -right-4 top-4 h-auto w-[min(12rem,40vw)] text-[var(--accent-indigo)] opacity-[0.2]" />
+          <div className="relative z-[1] mt-12 overflow-hidden rounded-[1.2rem] border border-[color-mix(in_srgb,var(--glass-border)_90%,transparent)] bg-[color-mix(in_srgb,var(--bg-glass)_62%,transparent)] p-7 sm:p-9">
+            <PageCraftMotif className="pointer-events-none absolute -right-6 top-2 h-auto w-[min(10rem,38vw)] text-[var(--accent-indigo)] opacity-[0.16]" />
             <p className="jelly-section-eyebrow">After launch</p>
-            <h3 className="font-display mt-2 text-lg font-bold text-[var(--ink)] sm:text-xl">Care &amp; subscriptions</h3>
-            <p className="jelly-section-lead jelly-section-lead--relaxed mt-3 max-w-2xl !text-[0.9375rem]">
-              Hosting hygiene, small fixes, and optional embedded hours — so your site doesn&apos;t go quiet after
-              handoff.
+            <h3 className="font-display mt-2 text-lg font-bold text-[var(--ink)] sm:text-xl">Care &amp; hosting</h3>
+            <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-xl !text-[0.9375rem]">
+              Hygiene retainer optional — keeps your stack and content from going stale.
             </p>
-            <ul className="mt-6 grid gap-4 md:grid-cols-3">
+            <ul className="mt-10 grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
               {websiteCarePlans.map((plan) => (
-                <li key={plan.name} className="jelly-service-tier">
+                <li key={plan.name} className="jelly-service-tier jelly-service-tier--airy">
                   <p className="font-display text-sm font-semibold text-[var(--ink)]">{plan.name}</p>
-                  <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-[var(--accent-teal)]">
+                  <p className="mt-2 text-[0.65rem] font-extrabold uppercase tracking-[0.14em] text-[var(--accent-teal)]">
                     {plan.estimate}
                   </p>
-                  <p className="mt-3 text-sm leading-relaxed text-[var(--text-muted)]">{plan.lead}</p>
-                  <ul className="jelly-tier-includes">
-                    {plan.includes.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
+                  <p className="mt-3 text-[0.875rem] leading-relaxed text-[var(--text-muted)]">{plan.lead}</p>
+                  <details className="jelly-tier-details mt-4">
+                    <summary>Included ({plan.includes.length})</summary>
+                    <div className="jelly-tier-details__inner pb-4 pt-1">
+                      <ul className="jelly-tier-includes">
+                        {plan.includes.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </details>
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-sm text-[var(--text-muted)]">
-              Full detail on the{" "}
-              <Link href="/services#care" className="jelly-inline-svc-link">
-                Services
-              </Link>{" "}
-              page.
+            <p className="mt-8 text-sm text-[var(--text-muted)]">
+              <Link href="/services#care" className="jelly-inline-svc-link font-semibold">
+                Services · Care section
+              </Link>
             </p>
           </div>
         </JellyReveal>
 
         <JellyReveal>
-          <p className="jelly-bundle-callout mt-10 max-w-3xl">{bundleDiscountCopy}</p>
+          <p className="jelly-bundle-callout mx-auto mt-14 max-w-2xl">{bundleDiscountCopy}</p>
         </JellyReveal>
       </section>
 
@@ -185,8 +198,8 @@ export function HomePageSections() {
           <h2 id="testimonials-heading" className="jelly-section-title">
             In their words
           </h2>
-          <p className="jelly-section-lead jelly-section-lead--relaxed mt-3 max-w-xl">
-            Clients who trusted us with how their brand feels in the world.
+          <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-xl">
+            Short reflections from teams we&apos;ve shipped with.
           </p>
         </JellyReveal>
         <ul className="jelly-testimonials-grid relative z-[1] mt-12 grid max-w-none gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -231,7 +244,7 @@ export function HomePageSections() {
               </div>
               <div className="min-w-0">
                 <p className="jelly-team-name">Aishwinder Singh</p>
-                <p className="jelly-team-title">Principal, Brand &amp; Digital Design</p>
+                <p className="jelly-team-title">Creative Frontend Designer &amp; Creative Director</p>
               </div>
             </li>
           </JellyReveal>
@@ -242,19 +255,14 @@ export function HomePageSections() {
               </div>
               <div className="min-w-0">
                 <p className="jelly-team-name">Gurpreet Singh</p>
-                <p className="jelly-team-title">Principal, Engineering &amp; Infrastructure</p>
+                <p className="jelly-team-title">Backend Engineer &amp; Technical Developer</p>
               </div>
             </li>
           </JellyReveal>
         </ul>
-        <JellyReveal>
-          <p className="relative z-[1] mt-10 max-w-xl text-sm font-semibold text-[var(--ink)]">
-            <Link href="/projects" className="jelly-inline-svc-link">
-              Browse full work →
-            </Link>
-          </p>
-        </JellyReveal>
       </section>
+
+      <HomeFeaturedProjects />
 
       <section className="jelly-section pb-2" aria-labelledby="final-cta-heading">
         <JellyReveal>

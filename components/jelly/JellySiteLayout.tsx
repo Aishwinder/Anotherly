@@ -1,8 +1,10 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { JellyBackground } from "@/components/jelly/JellyBackground";
 import { JellyFooter } from "@/components/jelly/JellyFooter";
 import { PageLoader } from "@/components/jelly/PageLoader";
@@ -12,9 +14,14 @@ import { ThemeToggle } from "@/components/jelly/ThemeToggle";
 import { useLenisRoot } from "@/components/jelly/useLenisRoot";
 import { useScrolledPast } from "@/hooks/useScrolledPast";
 
-const nav = [
+const primaryNav = [
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
+] as const;
+
+const mobileNavExtras = [
+  { href: "/", label: "Home" },
+  { href: "/contact", label: "Contact" },
 ] as const;
 
 export function JellySiteLayout({ children }: { children: ReactNode }) {
@@ -23,6 +30,18 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
   const projectsDense = pathname === "/projects";
   const scrolledPast = useScrolledPast(140);
   const showTalkFab = scrolledPast && pathname !== "/contact";
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileNavOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileNavOpen]);
 
   return (
     <>
@@ -60,8 +79,8 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                   </Link>
                   <div className="jelly-panel-header__actions flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-2.5">
                     <ThemeToggle />
-                    <nav className="flex flex-wrap items-center justify-end gap-1.5 sm:gap-2" aria-label="Primary">
-                      {nav.map((item) => {
+                    <nav className="hidden items-center justify-end gap-1.5 md:flex sm:gap-2" aria-label="Primary">
+                      {primaryNav.map((item) => {
                         const active = pathname === item.href;
                         return (
                           <Link
@@ -75,15 +94,75 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                       })}
                     </nav>
                     {!showTalkFab ? (
-                      <Link href="/contact" className="jelly-header-cta" data-jelly-header-cta>
+                      <Link href="/contact" className="jelly-header-cta hidden md:inline-flex" data-jelly-header-cta>
                         Let&apos;s talk
                       </Link>
                     ) : (
-                      <span className="jelly-header-cta-placeholder" aria-hidden />
+                      <span className="jelly-header-cta-placeholder hidden md:inline-block" aria-hidden />
                     )}
+                    <button
+                      type="button"
+                      className="jelly-header-menu-btn md:hidden"
+                      aria-expanded={mobileNavOpen}
+                      aria-controls="jelly-mobile-nav"
+                      onClick={() => setMobileNavOpen((v) => !v)}
+                    >
+                      {mobileNavOpen ? <X className="h-5 w-5" strokeWidth={2} aria-hidden /> : <Menu className="h-5 w-5" strokeWidth={2} aria-hidden />}
+                      <span className="sr-only">{mobileNavOpen ? "Close menu" : "Open menu"}</span>
+                    </button>
                   </div>
                 </div>
               </header>
+
+              <AnimatePresence>
+                {mobileNavOpen ? (
+                  <motion.nav
+                    id="jelly-mobile-nav"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    className="jelly-mobile-nav md:hidden"
+                    aria-label="Mobile navigation"
+                  >
+                    <div className="jelly-mobile-nav__inner">
+                      {mobileNavExtras.map((item) => {
+                        const active = pathname === item.href;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={["jelly-mobile-nav__link", active ? "font-bold text-[var(--ink)]" : ""].filter(Boolean).join(" ")}
+                            onClick={() => setMobileNavOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                      {primaryNav.map((item) => {
+                        const active = pathname === item.href;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={["jelly-mobile-nav__link", active ? "font-bold text-[var(--ink)]" : ""].filter(Boolean).join(" ")}
+                            onClick={() => setMobileNavOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        );
+                      })}
+                      <Link
+                        href="/contact"
+                        className="jelly-header-cta jelly-mobile-nav__cta"
+                        onClick={() => setMobileNavOpen(false)}
+                      >
+                        Let&apos;s talk
+                      </Link>
+                    </div>
+                  </motion.nav>
+                ) : null}
+              </AnimatePresence>
 
               <main className="jelly-panel-main flex min-w-0 flex-col">{children}</main>
               <JellyFooter />

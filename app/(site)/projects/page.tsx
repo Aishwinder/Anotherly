@@ -24,23 +24,23 @@ export default function ProjectsPage() {
           <PageCraftMotif className="h-auto w-full max-w-[16rem] text-[var(--accent-teal)] opacity-[0.42] sm:max-w-[18rem]" />
         </div>
         <JellyReveal variant="lift">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">Selected work</p>
-          <h1 className="font-display mt-3 text-3xl font-bold tracking-tight text-[var(--ink)] sm:text-4xl">Work</h1>
-          <p className="jelly-section-lead jelly-section-lead--relaxed relative z-[1] mt-5 max-w-2xl">
-            Plain scrolling: every case is a full card — read the story on the left or right, then step through images
-            with the arrows or dots. No hidden rails, no scroll tricks.
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--text-muted)]">Selected work</p>
+          <h1 className="font-display mt-3 text-[clamp(2rem,4vw,2.75rem)] font-bold tracking-tight text-[var(--ink)]">
+            Work
+          </h1>
+          <p className="jelly-section-lead jelly-section-lead--relaxed relative z-[1] mt-6 max-w-xl">
+            One case per beat — skim the narrative, glide through visuals. Tap the frame edges or swipe on your phone.
           </p>
-          <div className="jelly-projects-work-intro__meta relative z-[1] mt-6 flex flex-wrap items-center gap-3 text-xs font-semibold text-[var(--text-muted)]">
-            <span className="rounded-full border border-[var(--glass-border)] bg-[color-mix(in_srgb,var(--bg-glass)_65%,transparent)] px-3 py-1">
-              {nBrand + nWeb} cases on file
+          <div className="jelly-projects-work-intro__meta relative z-[1] mt-7 flex flex-wrap items-center gap-3 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+            <span className="rounded-full border border-[color-mix(in_srgb,var(--glass-border)_85%,transparent)] bg-[color-mix(in_srgb,var(--bg-glass)_72%,transparent)] px-3 py-1">
+              {nBrand + nWeb} cases
             </span>
-            <span className="hidden sm:inline opacity-50" aria-hidden>
+            <span className="hidden opacity-45 sm:inline" aria-hidden>
               ·
             </span>
-            <span>
-              Open for{" "}
-              <Link href="/contact" className="jelly-footer-link font-semibold text-[var(--ink)]">
-                new work
+            <span className="font-bold normal-case tracking-normal">
+              <Link href="/contact" className="jelly-inline-svc-link text-[var(--ink)]">
+                Booking new work
               </Link>
             </span>
           </div>

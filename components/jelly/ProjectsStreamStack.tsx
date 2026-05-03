@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { ProjectShowcase } from "@/lib/site";
 
 export type ProjectsStreamVariant = "branding" | "website";
@@ -17,6 +17,7 @@ function ProjectPhotoGallery({ project }: { project: ProjectShowcase }) {
   const imgs = project.images.length ? project.images : ["/assets/logo-minimal.png"];
   const [ix, setIx] = useState(0);
   const n = imgs.length;
+  const touchStart = useRef<number | null>(null);
 
   const go = useCallback(
     (d: -1 | 1) => {
@@ -35,7 +36,20 @@ function ProjectPhotoGallery({ project }: { project: ProjectShowcase }) {
 
   return (
     <div className="jelly-project-case-gallery">
-      <div className="jelly-project-case-gallery__viewport">
+      <div
+        className="jelly-project-case-gallery__viewport"
+        onTouchStart={(e) => {
+          touchStart.current = e.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(e) => {
+          if (touchStart.current == null || n <= 1) return;
+          const x = e.changedTouches[0]?.clientX ?? touchStart.current;
+          const dx = x - touchStart.current;
+          touchStart.current = null;
+          if (dx > 56) go(-1);
+          else if (dx < -56) go(1);
+        }}
+      >
         <div className="jelly-project-case-gallery__track" style={{ transform: `translateX(-${ix * 100}%)` }}>
           {imgs.map((src, i) => (
             <div key={`${project.slug}-img-${i}`} className="jelly-project-case-gallery__cell">
@@ -53,48 +67,45 @@ function ProjectPhotoGallery({ project }: { project: ProjectShowcase }) {
             </div>
           ))}
         </div>
-      </div>
-      <div className="jelly-project-case-gallery__chrome">
-        <div className="jelly-project-case-gallery__arrows">
-          <button
-            type="button"
-            className="jelly-project-case-gallery__arrow"
-            aria-label="Previous image"
-            disabled={n <= 1}
-            onClick={() => go(-1)}
-          >
-            <ChevronLeft className="h-5 w-5" strokeWidth={2} />
-          </button>
-          <button
-            type="button"
-            className="jelly-project-case-gallery__arrow"
-            aria-label="Next image"
-            disabled={n <= 1}
-            onClick={() => go(1)}
-          >
-            <ChevronRight className="h-5 w-5" strokeWidth={2} />
-          </button>
-        </div>
+
         {n > 1 ? (
-          <div className="jelly-project-case-gallery__dots" role="group" aria-label="Images">
-            {imgs.map((_, di) => (
+          <>
+            <div className="jelly-project-case-gallery__overlay-nav">
               <button
-                key={`${project.slug}-dot-${di}`}
                 type="button"
-                aria-current={di === ix ? "true" : undefined}
-                aria-label={`Image ${di + 1} of ${n}`}
-                className={["jelly-project-case-gallery__dot", di === ix ? "jelly-project-case-gallery__dot--on" : ""]
-                  .filter(Boolean)
-                  .join(" ")}
-                onClick={() => goTo(di)}
-              />
-            ))}
-          </div>
-        ) : null}
-        {n > 1 ? (
-          <p className="jelly-project-case-gallery__count" aria-live="polite">
-            {ix + 1} / {n}
-          </p>
+                className="jelly-project-case-gallery__arrow jelly-project-case-gallery__arrow--edge"
+                aria-label="Previous image"
+                onClick={() => go(-1)}
+              >
+                <ChevronLeft className="h-4 w-4" strokeWidth={2} aria-hidden />
+              </button>
+              <button
+                type="button"
+                className="jelly-project-case-gallery__arrow jelly-project-case-gallery__arrow--edge jelly-project-case-gallery__arrow--edge-right"
+                aria-label="Next image"
+                onClick={() => go(1)}
+              >
+                <ChevronRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+              </button>
+            </div>
+            <div className="jelly-project-case-gallery__dots jelly-project-case-gallery__dots--overlay" role="group" aria-label="Images">
+              {imgs.map((_, di) => (
+                <button
+                  key={`${project.slug}-dot-${di}`}
+                  type="button"
+                  aria-current={di === ix ? "true" : undefined}
+                  aria-label={`Image ${di + 1} of ${n}`}
+                  className={["jelly-project-case-gallery__dot", di === ix ? "jelly-project-case-gallery__dot--on" : ""]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => goTo(di)}
+                />
+              ))}
+            </div>
+            <p className="jelly-project-case-gallery__count jelly-project-case-gallery__count--overlay" aria-live="polite">
+              {ix + 1} / {n}
+            </p>
+          </>
         ) : null}
       </div>
     </div>

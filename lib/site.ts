@@ -192,6 +192,15 @@ export const websiteProjects = showcaseProjectsSource
   .filter((p) => p.kind === "website")
   .sort(sortWithFeaturedFirst(WEBSITE_STREAM_FIRST));
 
+/** Homepage “Featured projects” strip — RooHerb, Punjabi Tadka, JP Parts · AgentForge. */
+export const featuredHomeProjectSlugs = ["rooherb", "punjabi-tadka", "agent-forge-sales"] as const;
+
+export function featuredProjectsForHome(): ProjectShowcase[] {
+  const order = [...featuredHomeProjectSlugs];
+  const bySlug = new Map(showcaseProjectsSource.map((p) => [p.slug, p]));
+  return order.map((slug) => bySlug.get(slug)).filter((p): p is ProjectShowcase => Boolean(p));
+}
+
 /** Legacy shape — kept for any old imports. Prefer `showcaseProjects`. */
 export type ProjectCategory = "Branding" | "Website" | "Campaign";
 

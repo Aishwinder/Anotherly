@@ -151,7 +151,7 @@ html[data-theme="dark"] .jelly-bg-wash {
   opacity: 0.35;
 }
 
-/* Main glass panel — explicit -webkit-backdrop-filter + isolation + opaque wash so blur survives production minify; lighter blur for calmer glass */
+/* Main glass panel — parity blur light/dark (!important defeats downstream overrides); strong wash so frost reads above wallpaper */
 .jelly-main-panel {
   position: relative;
   z-index: 2;
@@ -161,16 +161,16 @@ html[data-theme="dark"] .jelly-bg-wash {
   background:
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.48) 0%,
-      rgba(255, 255, 255, 0.14) 44%,
-      rgba(255, 255, 255, 0.05) 100%
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.2) 48%,
+      rgba(255, 255, 255, 0.1) 100%
     ),
-    linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
-    rgba(255, 255, 255, 0.72);
+    linear-gradient(125deg, rgba(255, 255, 255, 0.16) 0%, transparent 54%),
+    rgba(255, 255, 255, 0.78);
   background-clip: padding-box;
   border: 1px solid color-mix(in srgb, var(--glass-border) 78%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(158%);
-  backdrop-filter: blur(12px) saturate(158%);
+  -webkit-backdrop-filter: blur(34px) saturate(185%) !important;
+  backdrop-filter: blur(34px) saturate(185%) !important;
   transition:
     border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
     box-shadow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
@@ -188,14 +188,14 @@ html[data-theme="dark"] .jelly-main-panel {
   background:
     linear-gradient(
       180deg,
-      rgba(200, 210, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 46%,
-      rgba(5, 8, 18, 0.35) 100%
+      rgba(200, 210, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.04) 48%,
+      rgba(10, 14, 28, 0.55) 100%
     ),
-    linear-gradient(125deg, rgba(160, 175, 255, 0.05) 0%, transparent 56%),
-    rgba(5, 7, 14, 0.62);
-  -webkit-backdrop-filter: blur(12px) saturate(158%);
-  backdrop-filter: blur(12px) saturate(158%);
+    linear-gradient(125deg, rgba(140, 160, 255, 0.08) 0%, transparent 58%),
+    rgba(8, 10, 22, 0.72);
+  -webkit-backdrop-filter: blur(34px) saturate(185%) !important;
+  backdrop-filter: blur(34px) saturate(185%) !important;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.07) inset,
     0 22px 56px rgba(0, 0, 0, 0.55),
@@ -382,14 +382,14 @@ html[data-theme="dark"] .jelly-panel-header {
   background:
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.44) 0%,
-      rgba(255, 255, 255, 0.16) 42%,
-      rgba(255, 255, 255, 0.05) 100%
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.18) 42%,
+      rgba(255, 255, 255, 0.1) 100%
     ),
     linear-gradient(125deg, rgba(255, 255, 255, 0.2) 0%, transparent 52%),
-    rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(12px) saturate(158%);
-  backdrop-filter: blur(12px) saturate(158%);
+    rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(34px) saturate(185%) !important;
+  backdrop-filter: blur(34px) saturate(185%) !important;
 }
 
 html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
@@ -398,14 +398,14 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
   background:
     linear-gradient(
       180deg,
-      rgba(200, 210, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.04) 44%,
-      rgba(6, 9, 18, 0.38) 100%
+      rgba(200, 210, 255, 0.11) 0%,
+      rgba(255, 255, 255, 0.05) 46%,
+      rgba(12, 16, 32, 0.58) 100%
     ),
-    linear-gradient(125deg, rgba(160, 175, 255, 0.06) 0%, transparent 54%),
-    rgba(6, 8, 16, 0.66);
-  -webkit-backdrop-filter: blur(12px) saturate(158%);
-  backdrop-filter: blur(12px) saturate(158%);
+    linear-gradient(125deg, rgba(140, 160, 255, 0.09) 0%, transparent 56%),
+    rgba(10, 12, 26, 0.74);
+  -webkit-backdrop-filter: blur(34px) saturate(185%) !important;
+  backdrop-filter: blur(34px) saturate(185%) !important;
 }
 
 /* Site chrome — comfortable space below footer (capped at 1in) */
@@ -423,6 +423,19 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
 @media (min-width: 640px) {
   .jelly-site-chrome--fab-active .jelly-panel-main {
     padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.5rem));
+  }
+}
+
+/* Floating contact FAB — phones & tablets; hidden on xl+ desktops (headers carry CTA) */
+@media (min-width: 1280px) {
+  .jelly-talk-fab-wrap {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .jelly-site-chrome--fab-active .jelly-panel-main {
+    padding-bottom: 0 !important;
   }
 }
 
@@ -504,11 +517,11 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
 }
 
 .jelly-projects-stream__lede {
-  margin: 0.45rem 0 0;
-  max-width: 36rem;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  color: color-mix(in srgb, var(--ink) 72%, var(--text-muted));
+  margin: 0.5rem 0 0;
+  max-width: 32rem;
+  font-size: 0.875rem;
+  line-height: 1.62;
+  color: color-mix(in srgb, var(--ink) 62%, var(--text-muted));
 }
 
 .jelly-projects-stream__count {
@@ -546,24 +559,24 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
 .jelly-projects-stream-stack__list {
   display: flex;
   flex-direction: column;
-  gap: clamp(1.75rem, 4vw, 2.75rem);
+  gap: clamp(2.15rem, 4.5vw, 3.25rem);
 }
 
 .jelly-project-case {
   position: relative;
   z-index: 1;
-  border-radius: 1.35rem;
-  border: 1px solid var(--glass-border);
-  background: color-mix(in srgb, var(--bg-glass) 72%, transparent);
+  border-radius: 1.42rem;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 95%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 74%, transparent);
   background-clip: padding-box;
-  backdrop-filter: blur(10px) saturate(1);
-  -webkit-backdrop-filter: blur(10px) saturate(1);
-  padding: clamp(1.15rem, 3vw, 1.75rem);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
+  padding: clamp(1.25rem, 3.2vw, 2rem);
   overflow: hidden;
   isolation: isolate;
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--glass-inner) 38%, transparent) inset,
-    0 14px 44px color-mix(in srgb, var(--accent-indigo) 6%, transparent);
+    0 18px 56px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
   transition:
     transform 0.28s cubic-bezier(0.33, 1, 0.32, 1),
     box-shadow 0.28s ease,
@@ -681,12 +694,12 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
 }
 
 .jelly-project-case__title {
-  margin: 0.5rem 2.5rem 0 0;
+  margin: 0.5rem 2.75rem 0 0;
   font-family: var(--font-display), system-ui, sans-serif;
-  font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+  font-size: clamp(1.4rem, 2.55vw, 1.98rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
   color: var(--ink);
 }
 
@@ -742,19 +755,21 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
   opacity: 0.45;
 }
 
-/* Per-case gallery — arrows + dots in a clear chrome row */
+/* Per-case gallery — full-bleed frame; swipe on mobile + minimal edge arrows */
 .jelly-project-case-gallery {
   position: relative;
   min-width: 0;
-  border-radius: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--glass-border) 92%, transparent);
-  background: color-mix(in srgb, var(--bg-glass) 58%, transparent);
+  border-radius: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 88%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 45%, transparent);
   background-clip: padding-box;
   overflow: hidden;
   isolation: isolate;
-  backdrop-filter: blur(8px) saturate(1);
-  -webkit-backdrop-filter: blur(8px) saturate(1);
-  box-shadow: 0 10px 32px color-mix(in srgb, var(--accent-indigo) 7%, transparent);
+  backdrop-filter: blur(12px) saturate(1.02);
+  -webkit-backdrop-filter: blur(12px) saturate(1.02);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 32%, transparent) inset,
+    0 20px 52px color-mix(in srgb, var(--accent-indigo) 10%, transparent);
 }
 
 .jelly-project-case-gallery__viewport {
@@ -762,21 +777,23 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
   aspect-ratio: 16 / 10;
   width: 100%;
   overflow: hidden;
-  border-radius: 1.1rem 1.1rem 0 0;
-  contain: paint;
+  border-radius: 1.2rem;
   isolation: isolate;
+  touch-action: manipulation;
 }
 
 .jelly-project-case-gallery__track {
   display: flex;
   height: 100%;
   width: 100%;
-  transition: transform 0.32s cubic-bezier(0.33, 1, 0.32, 1);
+  transition: transform 0.38s cubic-bezier(0.32, 0.72, 0.22, 1);
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .jelly-project-case-gallery__track {
     transition: none;
+    will-change: auto;
   }
 }
 
@@ -786,115 +803,150 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
   height: 100%;
   min-width: 0;
   overflow: hidden;
-  border-radius: inherit;
 }
 
 .jelly-project-case-gallery__cell-bg {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: inherit;
 }
 
 .jelly-project-case-gallery__cell-bg :is(img, span) {
-  border-radius: inherit;
+  border-radius: 0;
 }
 
-.jelly-project-case-gallery__chrome {
+.jelly-project-case-gallery__overlay-nav {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.65rem;
-  padding: 0.55rem 0.75rem 0.65rem;
-  border-top: 1px solid color-mix(in srgb, var(--glass-border) 75%, transparent);
-  background: color-mix(in srgb, var(--bg-glass) 52%, transparent);
+  padding: 0 min(0.5rem, 2vw);
+  pointer-events: none;
+  z-index: 4;
 }
 
-.jelly-project-case-gallery__arrows {
-  display: flex;
-  gap: 0.45rem;
-}
-
-.jelly-project-case-gallery__arrow {
+.jelly-project-case-gallery__arrow.jelly-project-case-gallery__arrow--edge {
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.125rem;
+  height: 2.125rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--glass-border) 90%, transparent);
-  background: color-mix(in srgb, var(--bg-glass) 85%, #fff);
-  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(6, 8, 16, 0.38);
+  color: rgba(255, 255, 255, 0.95);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    opacity 0.18s ease;
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
-.jelly-project-case-gallery__arrow:hover:not(:disabled) {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent-teal) 38%, var(--glass-border));
+.jelly-project-case-gallery__arrow--edge:hover {
+  background: rgba(10, 14, 24, 0.52);
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
-.jelly-project-case-gallery__arrow:disabled {
-  opacity: 0.32;
-  cursor: not-allowed;
+.jelly-project-case-gallery__arrow--edge:active {
+  transform: scale(0.94);
 }
 
-.jelly-project-case--branding .jelly-project-case-gallery__arrow:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--accent-orange) 42%, var(--glass-border));
+.jelly-project-case--branding .jelly-project-case-gallery__arrow--edge:hover {
+  border-color: rgba(255, 200, 160, 0.45);
 }
 
-.jelly-project-case-gallery__dots {
+.jelly-project-case--website .jelly-project-case-gallery__arrow--edge:hover {
+  border-color: rgba(160, 220, 255, 0.45);
+}
+
+.jelly-project-case-gallery__dots--overlay {
+  position: absolute;
+  left: 50%;
+  bottom: 0.55rem;
+  transform: translateX(-50%);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.35rem;
-  flex: 1 1 auto;
+  gap: 0.42rem;
+  padding: 0.35rem 0.65rem;
+  margin: 0;
+  pointer-events: auto;
+  z-index: 3;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(4, 6, 12, 0.28);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 .jelly-project-case-gallery__dot {
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.35rem;
+  height: 0.35rem;
   border-radius: 999px;
   padding: 0;
   border: none;
-  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
   transition:
     transform 0.15s ease,
-    background 0.15s ease;
+    background 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .jelly-project-case-gallery__dot:hover {
-  transform: scale(1.15);
-  background: color-mix(in srgb, var(--accent-indigo) 55%, var(--text-muted));
-}
-
-.jelly-project-case-gallery__dot--on {
-  background: color-mix(in srgb, var(--accent-indigo) 88%, var(--text-muted));
   transform: scale(1.2);
 }
 
+.jelly-project-case-gallery__dot--on {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.35);
+}
+
 .jelly-project-case--branding .jelly-project-case-gallery__dot--on {
-  background: color-mix(in srgb, var(--accent-orange) 88%, var(--text-muted));
+  background: rgba(255, 206, 170, 0.95);
 }
 
 .jelly-project-case--website .jelly-project-case-gallery__dot--on {
-  background: color-mix(in srgb, var(--accent-teal) 88%, var(--text-muted));
+  background: rgba(176, 230, 255, 0.95);
 }
 
-.jelly-project-case-gallery__count {
+.jelly-project-case-gallery__count--overlay {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.6rem;
   margin: 0;
-  font-size: 0.625rem;
+  padding: 0.2rem 0.48rem;
+  border-radius: 999px;
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  min-width: 3rem;
-  text-align: right;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(4, 6, 12, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  z-index: 3;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .jelly-project-case-gallery__arrow.jelly-project-case-gallery__arrow--edge {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-project-case-gallery__arrow--edge:active {
+    transform: none;
+  }
 }
 
 /* Shell wraps panel + ambience — clip children so radii stay clean (no square halos) */
@@ -1031,12 +1083,12 @@ html[data-theme="dark"] .jelly-ambience-flow {
 }
 
 .jelly-page-pad {
-  padding: 1.75rem 1.35rem 1.35rem;
+  padding: 1.85rem 1.25rem 1.65rem;
 }
 
 @media (min-width: 640px) {
   .jelly-page-pad {
-    padding: 2.25rem 2rem 1.6rem;
+    padding: 2.35rem 2.25rem 1.85rem;
   }
 }
 
@@ -2285,6 +2337,191 @@ html[data-theme="dark"] .jelly-ambience-flow {
   color: color-mix(in srgb, var(--ink) 88%, transparent);
 }
 
+/* Featured projects strip (homepage) */
+.jelly-featured-project-card {
+  border-radius: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 85%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 72%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 35%, transparent) inset,
+    0 14px 40px color-mix(in srgb, var(--accent-indigo) 7%, transparent);
+  overflow: hidden;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+
+.jelly-featured-project-card:hover {
+  border-color: color-mix(in srgb, var(--accent-teal) 22%, var(--glass-border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glass-inner) 42%, transparent) inset,
+    0 18px 48px color-mix(in srgb, var(--accent-indigo) 10%, transparent);
+}
+
+.jelly-featured-project-card__thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  overflow: hidden;
+}
+
+.jelly-featured-project-card__pill {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 2;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(6, 8, 16, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.jelly-featured-project-card__body {
+  padding: 1.05rem 1.15rem 1.2rem;
+}
+
+.jelly-featured-project-card__eyebrow {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.jelly-featured-project-card__title {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.jelly-featured-project-card__blurb {
+  margin: 0.45rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ink) 65%, var(--text-muted));
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Contact — principal block */
+.jelly-contact-principal {
+  margin-top: 1.75rem;
+  max-width: 26rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 78%, transparent);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--accent-indigo) 6%, transparent);
+}
+
+.jelly-contact-principal__name {
+  margin: 0;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.jelly-contact-principal__role {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.jelly-contact-principal__phone {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.jelly-contact-principal__phone:hover {
+  color: color-mix(in srgb, var(--ink) 75%, var(--accent-teal));
+}
+
+/* Minimal scan layout — expandable deliverables */
+.jelly-quote-fold,
+.jelly-tier-details {
+  border-radius: 0.875rem;
+  border: 1px solid color-mix(in srgb, var(--glass-border) 88%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 48%, transparent);
+}
+
+.jelly-quote-fold summary,
+.jelly-tier-details summary {
+  cursor: pointer;
+  padding: 0.65rem 0.95rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 72%, var(--text-muted));
+  list-style: none;
+}
+
+.jelly-quote-fold summary::-webkit-details-marker,
+.jelly-tier-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.jelly-quote-fold summary::after,
+.jelly-tier-details summary::after {
+  content: "";
+  float: right;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: 0.2rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.45;
+  transform: rotate(45deg);
+  transition: transform 0.18s ease;
+}
+
+.jelly-quote-fold[open] summary::after,
+.jelly-tier-details[open] summary::after {
+  transform: rotate(225deg);
+  margin-top: 0.32rem;
+}
+
+.jelly-quote-fold .jelly-quote-fold__inner,
+.jelly-tier-details .jelly-tier-details__inner {
+  padding: 0 0.95rem 0.95rem;
+  border-top: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+}
+
+.jelly-tier-details .jelly-tier-includes {
+  margin-top: 0.35rem;
+}
+
+.jelly-service-block--scan {
+  padding: clamp(1.35rem, 3.8vw, 1.85rem);
+  border: 1px solid color-mix(in srgb, var(--glass-border) 92%, transparent);
+  background: color-mix(in srgb, var(--bg-glass) 76%, transparent);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--accent-indigo) 5%, transparent);
+}
+
+.jelly-service-tier--airy {
+  padding: clamp(1.1rem, 2.5vw, 1.35rem);
+}
+
 /* CTA + links */
 .jelly-cta-pill {
   display: inline-flex;
@@ -2572,15 +2809,16 @@ html[data-theme="dark"] .jelly-ambience-flow {
 
 .jelly-section-lead {
   margin-top: 0.85rem;
-  max-width: 42rem;
+  max-width: 40rem;
   font-size: 0.9375rem;
-  line-height: 1.65;
+  line-height: 1.72;
+  letter-spacing: 0.01em;
   color: var(--text-muted);
 }
 
 .jelly-section-lead--relaxed {
-  line-height: 1.78;
-  letter-spacing: 0.012em;
+  line-height: 1.82;
+  letter-spacing: 0.008em;
 }
 
 .jelly-studio-listen {

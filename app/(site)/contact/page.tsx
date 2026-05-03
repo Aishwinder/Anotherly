@@ -39,13 +39,20 @@ export default function ContactPage() {
           <h1 className="font-display mt-3 text-3xl font-bold tracking-tight text-[var(--ink)] sm:text-4xl">
             Begin the Dialogue
           </h1>
-          <p className="jelly-section-lead jelly-section-lead--relaxed mt-5 max-w-2xl">
-            Share what you&apos;re building, your timeline, and a rough budget — we respond with honest fit, next steps,
-            and no pressure. Prefer email? Write directly below.
+          <p className="jelly-section-lead jelly-section-lead--relaxed mt-6 max-w-2xl">
+            Share goals, timeline, and a rough budget — we reply with clear fit and next steps. No chase, no playbook
+            theatre.
           </p>
-          <ul className="mt-6 space-y-2 text-sm text-[var(--text-muted)]">
+          <div className="jelly-contact-principal mt-10">
+            <p className="jelly-contact-principal__name">Aishwinder Singh</p>
+            <p className="jelly-contact-principal__role">Creative Frontend Designer &amp; Creative Director</p>
+            <a href="tel:+16476466101" className="jelly-contact-principal__phone">
+              +1 647 646 6101
+            </a>
+          </div>
+          <ul className="mt-8 space-y-2 text-sm text-[var(--text-muted)]">
             <li>
-              <strong className="text-[var(--ink)]">Email:</strong>{" "}
+              <strong className="font-semibold text-[var(--ink)]">Studio email:</strong>{" "}
               <a href="mailto:hello@anotherly.studio" className="jelly-inline-contact-link">
                 hello@anotherly.studio
               </a>
