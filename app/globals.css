@@ -151,25 +151,26 @@ html[data-theme="dark"] .jelly-bg-wash {
   opacity: 0.35;
 }
 
-/* Main glass panel — white frost stack + blur; light/dark tuned for similar separation from wallpaper */
+/* Main glass panel — explicit -webkit-backdrop-filter + isolation + opaque wash so blur survives production minify; lighter blur for calmer glass */
 .jelly-main-panel {
   position: relative;
   z-index: 2;
+  isolation: isolate;
   overflow: hidden;
   border-radius: clamp(22px, 3.8vw, 30px);
   background:
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.13) 44%,
-      rgba(255, 255, 255, 0.04) 100%
+      rgba(255, 255, 255, 0.48) 0%,
+      rgba(255, 255, 255, 0.14) 44%,
+      rgba(255, 255, 255, 0.05) 100%
     ),
-    linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, transparent 52%),
-    rgba(255, 255, 255, 0.24);
+    linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
+    rgba(255, 255, 255, 0.72);
   background-clip: padding-box;
   border: 1px solid color-mix(in srgb, var(--glass-border) 78%, transparent);
-  backdrop-filter: blur(10px) saturate(1.05);
-  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(12px) saturate(158%);
+  backdrop-filter: blur(12px) saturate(158%);
   transition:
     border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
     box-shadow 0.2s cubic-bezier(0.33, 1, 0.68, 1);
@@ -187,12 +188,14 @@ html[data-theme="dark"] .jelly-main-panel {
   background:
     linear-gradient(
       180deg,
-      rgba(200, 210, 255, 0.09) 0%,
+      rgba(200, 210, 255, 0.08) 0%,
       rgba(255, 255, 255, 0.03) 46%,
-      transparent 100%
+      rgba(5, 8, 18, 0.35) 100%
     ),
-    linear-gradient(125deg, rgba(160, 175, 255, 0.06) 0%, transparent 56%),
-    rgba(5, 7, 14, 0.58);
+    linear-gradient(125deg, rgba(160, 175, 255, 0.05) 0%, transparent 56%),
+    rgba(5, 7, 14, 0.62);
+  -webkit-backdrop-filter: blur(12px) saturate(158%);
+  backdrop-filter: blur(12px) saturate(158%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.07) inset,
     0 22px 56px rgba(0, 0, 0, 0.55),
@@ -217,8 +220,8 @@ html[data-theme="dark"] .jelly-main-panel {
   border: none;
   border-bottom: 1px solid var(--glass-border);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.12) 100%);
-  backdrop-filter: blur(2.75px) saturate(1.03);
-  -webkit-backdrop-filter: blur(2.75px) saturate(1.03);
+  -webkit-backdrop-filter: blur(2px) saturate(1.02);
+  backdrop-filter: blur(2px) saturate(1.02);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--glass-inner) 45%, transparent) inset;
   transition:
     border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
@@ -231,11 +234,14 @@ html[data-theme="dark"] .jelly-panel-header {
   box-shadow: 0 1px 0 color-mix(in srgb, var(--glass-inner) 32%, transparent) inset;
 }
 
+/* Header bar — row + wrap so wordmark | theme · nav · menu fit without cramped multi-line pills on phones */
 .jelly-panel-header__inner {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.75rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem 0.85rem;
   width: 100%;
   min-width: 0;
   padding: 0.85rem 1rem 0.85rem 1rem;
@@ -243,11 +249,117 @@ html[data-theme="dark"] .jelly-panel-header {
 
 @media (min-width: 640px) {
   .jelly-panel-header__inner {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    flex-wrap: nowrap;
     gap: 1rem;
     padding: 0.95rem 1.25rem 0.95rem 1.25rem;
+  }
+}
+
+.jelly-header-menu-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  border: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 82%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-backdrop-filter: blur(4px) saturate(1.02);
+  backdrop-filter: blur(4px) saturate(1.02);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 28%, transparent) inset,
+    0 6px 14px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
+  transition:
+    transform 0.18s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.jelly-header-menu-btn:hover {
+  transform: translate3d(0, -1px, 0);
+  background: color-mix(in srgb, var(--bg-glass) 94%, transparent);
+}
+
+.jelly-header-menu-btn:active {
+  transform: translate3d(0, 0, 0);
+}
+
+.jelly-mobile-nav {
+  overflow: hidden;
+  border-bottom: 1px solid var(--glass-border);
+  background: color-mix(in srgb, var(--bg-glass) 94%, transparent);
+  -webkit-backdrop-filter: blur(6px) saturate(1.04);
+  backdrop-filter: blur(6px) saturate(1.04);
+}
+
+.jelly-mobile-nav__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 1rem 1rem;
+}
+
+.jelly-mobile-nav__link {
+  display: flex;
+  align-items: center;
+  border-radius: 0.875rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--ink) 90%, transparent);
+  text-decoration: none;
+  transition: background 0.18s ease;
+}
+
+.jelly-mobile-nav__link:hover {
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+
+.jelly-mobile-nav__cta {
+  margin-top: 0.45rem;
+  width: 100%;
+  justify-content: center !important;
+}
+
+.jelly-carousel-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(8, 10, 20, 0.36);
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-backdrop-filter: blur(6px) saturate(1.05);
+  backdrop-filter: blur(6px) saturate(1.05);
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.jelly-carousel-btn:hover {
+  background: rgba(14, 18, 32, 0.52);
+  border-color: rgba(255, 255, 255, 0.36);
+}
+
+.jelly-carousel-btn:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-carousel-btn:active {
+    transform: none;
   }
 }
 
@@ -275,7 +387,9 @@ html[data-theme="dark"] .jelly-panel-header {
       rgba(255, 255, 255, 0.05) 100%
     ),
     linear-gradient(125deg, rgba(255, 255, 255, 0.2) 0%, transparent 52%),
-    rgba(255, 255, 255, 0.3);
+    rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(12px) saturate(158%);
+  backdrop-filter: blur(12px) saturate(158%);
 }
 
 html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
@@ -284,12 +398,14 @@ html[data-theme="dark"] .jelly-main-panel.jelly-main-panel--projects-dense {
   background:
     linear-gradient(
       180deg,
-      rgba(200, 210, 255, 0.11) 0%,
+      rgba(200, 210, 255, 0.1) 0%,
       rgba(255, 255, 255, 0.04) 44%,
-      transparent 100%
+      rgba(6, 9, 18, 0.38) 100%
     ),
-    linear-gradient(125deg, rgba(160, 175, 255, 0.07) 0%, transparent 54%),
-    rgba(6, 8, 16, 0.68);
+    linear-gradient(125deg, rgba(160, 175, 255, 0.06) 0%, transparent 54%),
+    rgba(6, 8, 16, 0.66);
+  -webkit-backdrop-filter: blur(12px) saturate(158%);
+  backdrop-filter: blur(12px) saturate(158%);
 }
 
 /* Site chrome — comfortable space below footer (capped at 1in) */
@@ -1347,8 +1463,8 @@ html[data-theme="dark"] .jelly-ambience-flow {
   box-shadow:
     0 1px 0 color-mix(in srgb, #fff 35%, transparent) inset,
     0 6px 16px color-mix(in srgb, var(--accent-indigo) 8%, transparent);
-  backdrop-filter: blur(6px) saturate(1.02);
-  -webkit-backdrop-filter: blur(6px) saturate(1.02);
+  -webkit-backdrop-filter: blur(4px) saturate(1.02);
+  backdrop-filter: blur(4px) saturate(1.02);
   transition:
     transform 0.2s ease,
     background 0.22s ease,
