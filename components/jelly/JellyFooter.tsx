@@ -2,17 +2,15 @@ import Link from "next/link";
 
 export function JellyFooter() {
   return (
-    <footer className="jelly-site-footer rounded-b-[clamp(22px,3.8vw,30px)] border-t border-[var(--glass-border)] px-5 py-6 sm:px-6">
-      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-4">
-        <p className="text-center text-xs text-[var(--text-muted)] sm:text-left">
-          © 2026 Anotherly Studio ·{" "}
-          <Link href="/contact" className="jelly-footer-link">
-            Contact
-          </Link>
+    <footer className="jelly-site-footer jelly-site-footer--play jelly-slab-width px-6 py-7 sm:px-8">
+      <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
+        <p className="jelly-footer-tagline text-center text-[0.8125rem] leading-relaxed text-[var(--ink)] sm:text-sm md:text-left">
+          © anotherly {new Date().getFullYear()} · Not your average studio · Delhi · Berlin · Remote but loud
         </p>
+
         <nav
-          className="flex flex-wrap items-center justify-center gap-x-1 text-xs font-semibold text-[var(--text-muted)] sm:justify-end"
-          aria-label="Social"
+          className="flex flex-wrap items-center justify-center gap-x-1 text-[0.8125rem] font-semibold text-[var(--text-muted)] sm:text-sm md:justify-end"
+          aria-label="Social and legal"
         >
           <a
             href="https://www.instagram.com"
@@ -55,6 +53,12 @@ export function JellyFooter() {
           >
             Behance
           </a>
+          <span aria-hidden className="opacity-40">
+            |
+          </span>
+          <Link href="/contact" className="jelly-footer-link px-1.5 py-1">
+            Contact
+          </Link>
           <span aria-hidden className="opacity-40">
             |
           </span>

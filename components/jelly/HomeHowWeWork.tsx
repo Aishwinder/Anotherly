@@ -3,6 +3,7 @@
 import type { MotionValue } from "framer-motion";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGlassSlab";
 import { howWeWorkSteps } from "@/lib/home-content";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 
@@ -55,49 +56,35 @@ export function HomeHowWeWork() {
   const total = howWeWorkSteps.length;
 
   return (
-    <section ref={sectionRef} className="jelly-section relative overflow-hidden" id="how-we-work" aria-labelledby="how-we-work-heading">
-      <JellySectionGeo variant="orbit" />
-      <div className="jelly-how-work-grid relative z-[1]">
-        <div className="jelly-how-work-main">
-          <p className="jelly-section-eyebrow">How we work</p>
-          <h2 id="how-we-work-heading" className="jelly-section-title max-w-xl">
-            We don&apos;t guess. We listen first.
-          </h2>
-          <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-xl text-[var(--text-muted)]">
-            A single thread from discovery to launch — each phase glides in as you scroll.
-          </p>
-
-          <ol className="jelly-how-work-list mt-12 list-none space-y-0 pl-0">
-            {howWeWorkSteps.map((step, i) => (
-              <HowWeWorkStep
-                key={step.title}
-                step={step}
-                index={i}
-                total={total}
-                scrollYProgress={scrollYProgress}
-                reduce={reduce}
-              />
-            ))}
-          </ol>
-        </div>
-
-        <aside className="jelly-how-work-aside" aria-hidden>
-          <div className="jelly-how-work-aside__card">
-            <div className="jelly-how-work-aside__mesh" />
-            <p className="jelly-how-work-aside__kicker">From first call to handoff</p>
-            <p className="jelly-how-work-aside__rule" />
-            <p className="jelly-how-work-aside__micro">
-              Discovery, narrative, interface, build, launch — then optional growth. No mystery phases, no black-box
-              delivery.
+    <section ref={sectionRef} className="scroll-mt-28" id="how-we-work" aria-labelledby="how-we-work-heading">
+      <JellyGlassSlab className="relative overflow-hidden">
+        <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
+        <JellySectionGeo variant="orbit" />
+        <div className="jelly-how-work-balanced relative z-[1]">
+          <div className="jelly-how-work-main">
+            <p className="jelly-section-eyebrow">How we work</p>
+            <h2 id="how-we-work-heading" className="jelly-section-title max-w-2xl">
+              We don&apos;t guess. We listen first.
+            </h2>
+            <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-2xl text-[var(--text-muted)]">
+              A single thread from discovery to launch — each phase glides in as you scroll.
             </p>
-            <ul className="jelly-how-work-aside__ticks">
-              <li>Aligned before pixels</li>
-              <li>One studio thread</li>
-              <li>Training included</li>
-            </ul>
+
+            <ol className="jelly-how-work-list jelly-how-work-list--grid mt-9 list-none space-y-0 pl-0 sm:mt-11">
+              {howWeWorkSteps.map((step, i) => (
+                <HowWeWorkStep
+                  key={step.title}
+                  step={step}
+                  index={i}
+                  total={total}
+                  scrollYProgress={scrollYProgress}
+                  reduce={reduce}
+                />
+              ))}
+            </ol>
           </div>
-        </aside>
-      </div>
+        </div>
+      </JellyGlassSlab>
     </section>
   );
 }

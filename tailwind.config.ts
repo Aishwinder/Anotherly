@@ -19,6 +19,7 @@ const config: ConfigWithSafelist = {
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],
+        hand: ["var(--font-hand)", "cursive", "ui-serif", "serif"],
       },
       backdropBlur: {
         none: "0",

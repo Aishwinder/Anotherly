@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 /**
- * Dual-layer backgrounds for silky crossfade between light/dark art-directed plates.
+ * Full-page art-directed plates per theme.
  */
 export function JellyBackground() {
   const { resolvedTheme } = useTheme();
@@ -20,12 +20,12 @@ export function JellyBackground() {
       <div
         className="jelly-bg-photo jelly-bg-photo--light"
         data-active={!isDark ? "true" : "false"}
-        style={{ backgroundImage: "url(/assets/lightmodebg.png)" }}
+        style={{ backgroundImage: "url(/assets/website-bg-light.png)" }}
       />
       <div
         className="jelly-bg-photo jelly-bg-photo--dark"
         data-active={isDark ? "true" : "false"}
-        style={{ backgroundImage: "url(/assets/darkmodebg.png)" }}
+        style={{ backgroundImage: "url(/assets/website-bg-dark.png)" }}
       />
       <div className="jelly-bg-wash" />
     </div>

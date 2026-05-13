@@ -1,7 +1,6 @@
 "use client";
 
-import { AnimatePresence, animate, motion, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
-import { useTheme } from "next-themes";
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 const LOADER_DONE = "jelly-loader-done";
@@ -12,7 +11,7 @@ function dispatchLoaderDone() {
 }
 
 /**
- * Stage over the live shell: plate + dim + “a” fill. Quick, smooth handoff to the page when the overlay lifts.
+ * White stage + paintbrush glide: soft gradient mask wipes the overlay away to reveal the site.
  */
 export function PageLoader() {
   const [visible, setVisible] = useState(true);
@@ -20,29 +19,17 @@ export function PageLoader() {
   const [fontsReady, setFontsReady] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const doneRef = useRef(false);
-  const { resolvedTheme } = useTheme();
   const progress = useMotionValue(0);
 
-  const isDark = mounted && resolvedTheme === "dark";
-  const bgUrl = isDark ? "/assets/darkmodebg.png" : "/assets/lightmodebg.png";
-
-  const blurPx = useTransform(progress, [0, 1], [18, 0]);
-  const bright = useTransform(progress, [0, 1], [0.5, 1]);
-  const plateFilter = useMotionTemplate`blur(${blurPx}px) saturate(1.08) brightness(${bright})`;
-
-  const dimOpacity = useTransform(progress, [0, 1], [0.55, 0]);
-
-  const plateStackOpacity = useTransform(progress, [0, 0.42, 0.72, 1], [1, 1, 0.22, 0]);
-
-  const markOpacity = useTransform(progress, [0, 0.58, 0.82, 1], [1, 1, 0.2, 0]);
-
-  const fillClipPath = useTransform(progress, (p) => {
-    let top = (1 - p) * 100;
-    const wave = Math.sin(p * Math.PI * 5.5) * 2.4 * Math.sin(p * Math.PI);
-    const waveB = Math.cos(p * Math.PI * 3.2 + 0.4) * 1 * (1 - p);
-    top = Math.min(100, Math.max(0, top - wave - waveB));
-    return `inset(${top}% 0 0 0)`;
+  const maskImage = useTransform(progress, (p) => {
+    const edge = p * 115;
+    const soft = 14 + (1 - p) * 8;
+    return `linear-gradient(90deg, transparent 0%, transparent calc(${edge - soft}%), black calc(${edge}%), black 100%)`;
   });
+
+  const brushX = useTransform(progress, [0, 1], ["-8%", "102%"]);
+  const brushRotate = useTransform(progress, [0, 0.5, 1], [-6, 2, 4]);
+  const brushY = useTransform(progress, [0, 0.35, 0.7, 1], ["42%", "44%", "43%", "45%"]);
 
   useEffect(() => setMounted(true), []);
 
@@ -60,7 +47,7 @@ export function PageLoader() {
     let cancelled = false;
     const fallback = window.setTimeout(() => {
       if (!cancelled) setFontsReady(true);
-    }, 1100);
+    }, 800);
     void document.fonts.ready.then(() => {
       if (cancelled) return;
       window.clearTimeout(fallback);
@@ -73,16 +60,11 @@ export function PageLoader() {
   }, []);
 
   useEffect(() => {
-    if (!reduceMotion || !mounted) return;
-    setVisible(false);
-  }, [reduceMotion, mounted]);
-
-  useEffect(() => {
     if (reduceMotion || !fontsReady || !mounted) return;
 
     const controls = animate(progress, 1, {
-      duration: 0.92,
-      ease: [0.25, 0.08, 0.18, 1],
+      duration: 2.05,
+      ease: [0.33, 0.06, 0.18, 1],
       onComplete: () => {
         setVisible(false);
       },
@@ -90,6 +72,12 @@ export function PageLoader() {
 
     return () => controls.stop();
   }, [fontsReady, mounted, progress, reduceMotion]);
+
+  useEffect(() => {
+    if (!reduceMotion || !mounted) return;
+    progress.set(1);
+    setVisible(false);
+  }, [reduceMotion, mounted, progress]);
 
   const exitEase = [0.33, 1, 0.32, 1] as const;
 
@@ -104,36 +92,55 @@ export function PageLoader() {
       {visible ? (
         <motion.div
           key="loader"
-          className="jelly-page-loader jelly-page-loader--v2"
+          className="paint-page-loader fixed inset-0 z-[10001]"
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
-            transition: { duration: reduceMotion ? 0.12 : 0.36, ease: exitEase },
+            transition: { duration: reduceMotion ? 0.08 : 0.28, ease: exitEase },
           }}
           aria-hidden
         >
-          <motion.div className="jelly-page-loader__plate" style={{ opacity: plateStackOpacity }} aria-hidden>
-            <motion.div
-              className="jelly-page-loader__plate-img"
-              style={{
-                backgroundImage: `url(${bgUrl})`,
-                filter: plateFilter,
-              }}
-            />
-            <motion.div className="jelly-page-loader__plate-dim" style={{ opacity: dimOpacity }} />
-          </motion.div>
-
           <motion.div
-            className="jelly-page-loader__mark-wrap"
-            style={{ opacity: fontsReady && mounted ? markOpacity : 0 }}
-          >
-            <div className="jelly-page-loader__mark" aria-hidden>
-              <span className="jelly-page-loader__letter-base">a</span>
-              <motion.span className="jelly-page-loader__letter-layer" style={{ clipPath: fillClipPath }}>
-                <span className="jelly-page-loader__letter-fill">a</span>
-              </motion.span>
-            </div>
-          </motion.div>
+            className="paint-page-loader__wash absolute inset-0 bg-[#fdfdfd]"
+            style={{
+              WebkitMaskImage: maskImage,
+              maskImage,
+            }}
+          />
+
+          {!reduceMotion && (
+            <motion.div className="paint-page-loader__brush pointer-events-none absolute left-0 top-0 z-[2] -translate-x-1/2 -translate-y-1/2"
+              style={{
+                left: brushX,
+                top: brushY,
+                rotate: brushRotate,
+              }}
+            >
+              <svg width="118" height="156" viewBox="0 0 118 156" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <path
+                  d="M92 28c6 8 10 17 11 26 3 31-42 71-74 93-13 9-29 13-37 11-13-5-33-61-38-109-10-104 101-134 138-21Z"
+                  fill="url(#pb)"
+                  stroke="#1f1530"
+                  strokeWidth="1.75"
+                  strokeLinejoin="round"
+                />
+                <path d="m28 138 72-104" stroke="#1f153048" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M18 146c42-42 118-146 146-146" stroke="url(#st)" strokeWidth="10" strokeLinecap="round" opacity="0.35" />
+                <defs>
+                  <linearGradient id="pb" x1="20" y1="140" x2="104" y2="36" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#c4b5fd" />
+                    <stop offset="0.45" stopColor="#a78bfa" />
+                    <stop offset="1" stopColor="#7c3aed" />
+                  </linearGradient>
+                  <linearGradient id="st" x1="34" y1="146" x2="160" y2="20" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#f472b6" stopOpacity="0" />
+                    <stop offset="0.35" stopColor="#e879f9" stopOpacity="0.85" />
+                    <stop offset="0.85" stopColor="#a855f7" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </motion.div>
+          )}
         </motion.div>
       ) : null}
     </AnimatePresence>

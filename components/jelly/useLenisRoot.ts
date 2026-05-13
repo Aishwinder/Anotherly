@@ -13,17 +13,17 @@ export function useLenisRoot() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    /** Native scroll on narrow viewports — smoother + less main-thread work than Lenis + touch. */
-    const narrow = window.matchMedia("(max-width: 640px)").matches;
+    /** Native scroll only on very small phones — Lenis elsewhere for smoother feel. */
+    const narrow = window.matchMedia("(max-width: 479px)").matches;
     if (reduce || narrow) return;
 
     const lenis = new Lenis({
-      lerp: 0.22,
-      wheelMultiplier: 1.12,
-      touchMultiplier: 1.06,
+      lerp: 0.14,
+      wheelMultiplier: 0.92,
+      touchMultiplier: 1.04,
       smoothWheel: true,
       syncTouch: true,
-      syncTouchLerp: 0.16,
+      syncTouchLerp: 0.12,
     });
     lenisRef.current = lenis;
 

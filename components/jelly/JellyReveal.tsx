@@ -16,7 +16,7 @@ type Props = {
 };
 
 /** Easier to trigger so scroll reveals read clearly on the page */
-const viewportOpts = { once: true as const, margin: "0px 0px -6% 0px" as const, amount: 0.03 as const };
+const viewportOpts = { once: true as const, margin: "0px 0px -10% 0px" as const, amount: 0.02 as const };
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -45,35 +45,35 @@ export function JellyReveal({ children, className = "", delay = 0, parallax = 0,
     }
     if (useParallaxMotion) {
       return {
-        initial: { opacity: 0, y: 32, scale: 0.988 } as const,
+        initial: { opacity: 0, y: 36, scale: 0.985 } as const,
         whileInView: { opacity: 1, y: 0, scale: 1 } as const,
       };
     }
     switch (variant) {
       case "lift":
         return {
-          initial: { opacity: 0, y: 40, scale: 0.986 } as const,
+          initial: { opacity: 0, y: 48, scale: 0.982 } as const,
           whileInView: { opacity: 1, y: 0, scale: 1 } as const,
         };
       case "drift":
         return {
-          initial: { opacity: 0, y: 22, x: -14 } as const,
+          initial: { opacity: 0, y: 28, x: -18 } as const,
           whileInView: { opacity: 1, y: 0, x: 0 } as const,
         };
       case "zoom":
         return {
-          initial: { opacity: 0, y: 16, scale: 0.965 } as const,
+          initial: { opacity: 0, y: 20, scale: 0.958 } as const,
           whileInView: { opacity: 1, y: 0, scale: 1 } as const,
         };
       default:
         return {
-          initial: { opacity: 0, y: 30, scale: 0.988 } as const,
+          initial: { opacity: 0, y: 36, scale: 0.985 } as const,
           whileInView: { opacity: 1, y: 0, scale: 1 } as const,
         };
     }
   }, [reduce, useParallaxMotion, variant]);
 
-  const duration = variant === "lift" ? 0.52 : variant === "zoom" ? 0.48 : 0.46;
+  const duration = variant === "lift" ? 0.5 : variant === "zoom" ? 0.46 : 0.44;
 
   const inner = (
     <motion.div

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Caveat, Inter, Syne } from "next/font/google";
 import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
@@ -15,6 +15,12 @@ const fontDisplay = Syne({
   display: "block",
   preload: true,
   adjustFontFallback: true,
+});
+
+const fontHand = Caveat({
+  subsets: ["latin"],
+  variable: "--font-hand",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -47,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning data-theme="light">
-      <body className={`${fontSans.variable} ${fontDisplay.variable} font-sans antialiased`}>
+      <body className={`${fontSans.variable} ${fontDisplay.variable} ${fontHand.variable} font-sans antialiased`}>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

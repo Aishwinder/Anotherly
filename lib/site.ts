@@ -9,7 +9,7 @@ export type ProjectShowcase = {
   /** Short line for the meta column (discipline / context). */
   category: string;
   year: string;
-  /** ISO date for ordering (oldest → newest in each stream). */
+  /** ISO date for metadata (not used for main ordering). */
   createdAt: string;
   blurb: string;
   /** Two or three crisp outcomes — shown on the work page. */
@@ -27,46 +27,11 @@ export function projectImages(slug: string, count: number): string[] {
   });
 }
 
-function sortByCreatedAt(a: ProjectShowcase, b: ProjectShowcase): number {
-  const byDate = a.createdAt.localeCompare(b.createdAt);
-  if (byDate !== 0) return byDate;
-  return a.slug.localeCompare(b.slug);
-}
-
-/** `/projects` stream order — listed slugs first, then everyone else by `createdAt`. */
-const BRANDING_STREAM_FIRST = ["sector-span", "rooherb-brand"] as const;
-const WEBSITE_STREAM_FIRST = ["jp-parts", "rooherb"] as const;
-
-function sortWithFeaturedFirst(priority: readonly string[]) {
-  const rank = (slug: string) => {
-    const i = priority.indexOf(slug);
-    return i === -1 ? priority.length + 100 : i;
-  };
-  return (a: ProjectShowcase, b: ProjectShowcase) => {
-    const ra = rank(a.slug);
-    const rb = rank(b.slug);
-    if (ra !== rb) return ra - rb;
-    return sortByCreatedAt(a, b);
-  };
-}
-
+/**
+ * Order matches asset folders under `Assets/Project images/`:
+ * Branding subfolders by creation time, then Websites subfolders by creation time.
+ */
 const showcaseProjectsSource: ProjectShowcase[] = [
-  {
-    slug: "luis-borges",
-    name: "Luis Borges",
-    kind: "branding",
-    category: "Restaurant · Portugal",
-    year: "2025",
-    createdAt: "2025-01-18",
-    blurb: "Portuguese dining, distilled — warm typography, tile-inspired motifs, and a mark that feels like the room.",
-    bullets: [
-      "Wordmark and monogram tuned for menus, signage, and social",
-      "Earth-and-terracotta palette drawn from Atlantic coast light",
-      "Print-ready patterns for coasters, aprons, and takeaway",
-    ],
-    images: projectImages("luis-borges", 5),
-    gradient: "from-[#fff9f4] via-[#fdf2e8] to-[#f0e6dc]",
-  },
   {
     slug: "sector-span",
     name: "Sector Span",
@@ -100,52 +65,20 @@ const showcaseProjectsSource: ProjectShowcase[] = [
     gradient: "from-[#f4fdf8] via-[#e8f8ef] to-[#dcefe4]",
   },
   {
-    slug: "rooherb",
-    name: "RooHerb",
-    kind: "website",
-    category: "Natural stevia · Punjab · site",
+    slug: "luis-borges",
+    name: "Luis Borges",
+    kind: "branding",
+    category: "Restaurant · Portugal",
     year: "2025",
-    createdAt: "2025-06-08",
-    blurb: "Clean e-commerce storytelling — product purity, fast pages, and trust at first scroll.",
+    createdAt: "2025-01-18",
+    blurb: "Portuguese dining, distilled — warm typography, tile-inspired motifs, and a mark that feels like the room.",
     bullets: [
-      "Product-led homepage with ingredient transparency",
-      "Mobile-first checkout tuned for regional payment habits",
-      "Editorial blocks for recipes and farmer spotlights",
+      "Wordmark and monogram tuned for menus, signage, and social",
+      "Earth-and-terracotta palette drawn from Atlantic coast light",
+      "Print-ready patterns for coasters, aprons, and takeaway",
     ],
-    images: projectImages("rooherb", 4),
-    gradient: "from-[#f4fdf8] via-[#e8f8ef] to-[#dcefe4]",
-  },
-  {
-    slug: "jp-parts",
-    name: "JP Parts Intl",
-    kind: "website",
-    category: "International car parts · B2B",
-    year: "2026",
-    createdAt: "2026-02-04",
-    blurb: "Global catalogue, shipping calculator, and B2B flow — from cluttered to export-ready.",
-    bullets: [
-      "Dense catalogue with faceted search and OEM cross-refs",
-      "Quote and freight flows for importers and workshops",
-      "Trust layer: certifications, warranties, and lead times up front",
-    ],
-    images: projectImages("jp-parts", 1),
-    gradient: "from-[#f8f8f6] via-[#efeeea] to-[#e5e4df]",
-  },
-  {
-    slug: "punjabi-tadka",
-    name: "Punjabi Tadka",
-    kind: "website",
-    category: "Restaurant · authentic Indian",
-    year: "2025",
-    createdAt: "2025-07-20",
-    blurb: "Warm identity, menu, booking, and delivery — like walking in before you arrive.",
-    bullets: [
-      "Menu UX with spice levels, dietary tags, and combos",
-      "Reservations and third-party delivery surfaced clearly",
-      "Photography-led hero that mirrors the dining room energy",
-    ],
-    images: projectImages("punjabi-tadka", 2),
-    gradient: "from-[#fff8f2] via-[#fdf0e6] to-[#f5e8dc]",
+    images: projectImages("luis-borges", 5),
+    gradient: "from-[#fff9f4] via-[#fdf2e8] to-[#f0e6dc]",
   },
   {
     slug: "agent-forge-sales",
@@ -164,6 +97,22 @@ const showcaseProjectsSource: ProjectShowcase[] = [
     gradient: "from-[#f4f6ff] via-[#e8ecfb] to-[#dde3f5]",
   },
   {
+    slug: "jp-parts",
+    name: "JP Parts Intl",
+    kind: "website",
+    category: "International car parts · B2B",
+    year: "2026",
+    createdAt: "2026-02-04",
+    blurb: "Global catalogue, shipping calculator, and B2B flow — from cluttered to export-ready.",
+    bullets: [
+      "Dense catalogue with faceted search and OEM cross-refs",
+      "Quote and freight flows for importers and workshops",
+      "Trust layer: certifications, warranties, and lead times up front",
+    ],
+    images: projectImages("jp-parts", 1),
+    gradient: "from-[#f8f8f6] via-[#efeeea] to-[#e5e4df]",
+  },
+  {
     slug: "optima-cv",
     name: "Optima CV",
     kind: "website",
@@ -179,21 +128,49 @@ const showcaseProjectsSource: ProjectShowcase[] = [
     images: projectImages("optima-cv", 3),
     gradient: "from-[#f5f9ff] via-[#eaf0fb] to-[#dfe8f6]",
   },
+  {
+    slug: "punjabi-tadka",
+    name: "Punjabi Tadka",
+    kind: "website",
+    category: "Restaurant · authentic Indian",
+    year: "2025",
+    createdAt: "2025-07-20",
+    blurb: "Warm identity, menu, booking, and delivery — like walking in before you arrive.",
+    bullets: [
+      "Menu UX with spice levels, dietary tags, and combos",
+      "Reservations and third-party delivery surfaced clearly",
+      "Photography-led hero that mirrors the dining room energy",
+    ],
+    images: projectImages("punjabi-tadka", 2),
+    gradient: "from-[#fff8f2] via-[#fdf0e6] to-[#f5e8dc]",
+  },
+  {
+    slug: "rooherb",
+    name: "RooHerb",
+    kind: "website",
+    category: "Natural stevia · Punjab · site",
+    year: "2025",
+    createdAt: "2025-06-08",
+    blurb: "Clean e-commerce storytelling — product purity, fast pages, and trust at first scroll.",
+    bullets: [
+      "Product-led homepage with ingredient transparency",
+      "Mobile-first checkout tuned for regional payment habits",
+      "Editorial blocks for recipes and farmer spotlights",
+    ],
+    images: projectImages("rooherb", 4),
+    gradient: "from-[#f4fdf8] via-[#e8f8ef] to-[#dcefe4]",
+  },
 ];
 
-/** All cases, oldest → newest by `createdAt`. */
-export const showcaseProjects = [...showcaseProjectsSource].sort(sortByCreatedAt);
+/** All cases — Branding asset folders (creation order), then Website asset folders (creation order). */
+export const showcaseProjects = [...showcaseProjectsSource];
 
-export const brandingProjects = showcaseProjectsSource
-  .filter((p) => p.kind === "branding")
-  .sort(sortWithFeaturedFirst(BRANDING_STREAM_FIRST));
+export const brandingProjects = showcaseProjectsSource.filter((p) => p.kind === "branding");
 
-export const websiteProjects = showcaseProjectsSource
-  .filter((p) => p.kind === "website")
-  .sort(sortWithFeaturedFirst(WEBSITE_STREAM_FIRST));
+export const websiteProjects = showcaseProjectsSource.filter((p) => p.kind === "website");
 
-/** Homepage “Featured projects” strip — RooHerb, Punjabi Tadka, JP Parts · AgentForge. */
-export const featuredHomeProjectSlugs = ["rooherb", "punjabi-tadka", "agent-forge-sales"] as const;
+/** Homepage featured — three cases shown on the home grid. */
+export const featuredHomeProjectSlugs = ["luis-borges", "agent-forge-sales", "sector-span"] as const;
 
 export function featuredProjectsForHome(): ProjectShowcase[] {
   const order = [...featuredHomeProjectSlugs];

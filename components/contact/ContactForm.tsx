@@ -24,7 +24,7 @@ export function ContactForm() {
   }
 
   return (
-    <form className="jelly-contact-form mt-8 max-w-xl" onSubmit={handleSubmit}>
+    <form className="jelly-contact-form max-w-xl border-0" onSubmit={handleSubmit}>
       <div className="jelly-contact-field">
         <label htmlFor="contact-name">Name</label>
         <input id="contact-name" name="name" type="text" autoComplete="name" required className="jelly-contact-input" />
