@@ -107,9 +107,15 @@ body::-webkit-scrollbar {
 .jelly-bg-root {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  /* Sits behind chrome content; placed inside .jelly-site-chrome so it shares
+     the same stacking context as the glass slabs (required for production
+     backdrop-filter to actually blur the page background, not just the slab). */
+  z-index: -1;
   overflow: hidden;
   pointer-events: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: opacity;
 }
 
 .jelly-bg-photo {
@@ -178,11 +184,16 @@ html[data-theme="dark"] .jelly-bg-wash {
   opacity: 0.24;
 }
 
-/* Main column — absolutely no outer slab (only section slabs) */
+/* Main column — absolutely no outer slab (only section slabs).
+   IMPORTANT:
+   - Do NOT use `isolation: isolate` or an explicit `z-index` > 0 here. Both
+     create a stacking-context boundary which prevents descendant glass slabs
+     from reaching the JellyBackground via `backdrop-filter`. In dev it
+     sometimes works; in production (after Lightning CSS / minification) the
+     blur is dropped. `position: relative` w/ z-index auto keeps the layout
+     anchor but stays in the parent's stacking context. */
 .jelly-main-panel {
   position: relative;
-  z-index: 2;
-  isolation: isolate;
   display: flex;
   width: 100%;
   min-width: 0;
@@ -202,7 +213,6 @@ html[data-theme="dark"] .jelly-bg-wash {
 
 .jelly-main-panel > * {
   position: relative;
-  z-index: 1;
 }
 
 /* Header — fixed island + scroll conceal (see JellySiteLayout) */
@@ -3365,11 +3375,11 @@ html[data-theme="dark"] .jelly-section-eyebrow::before {
 }
 
 .jelly-section-title {
-  font-family: var(--font-hand), cursive;
-  font-size: clamp(1.85rem, 4.2vw, 2.75rem);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.12;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.95rem, 4.4vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1.06;
   color: var(--ink);
   margin-top: 0.7rem;
 }
@@ -3401,10 +3411,10 @@ html[data-theme="dark"] .jelly-section-eyebrow::before {
 .jelly-team-block-heading {
   margin-top: 3rem;
   margin-bottom: 0;
-  font-family: var(--font-hand), cursive;
-  font-size: clamp(1.25rem, 2.8vw, 1.55rem);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.3rem, 2.8vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.022em;
   color: var(--ink);
 }
 
@@ -3827,7 +3837,14 @@ html[data-theme="dark"] .jelly-how-work-aside__mesh {
   transition: transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1), box-shadow 0.32s ease;
 }
 
-.jelly-quote-card:hover {
+/* Quote cards are non-clickable — disable hover lift/border glow */
+.jelly-quote-card.jelly-quote-card--static,
+.jelly-quote-card.jelly-quote-card--static:hover {
+  transform: none;
+  cursor: default;
+}
+
+.jelly-quote-card:not(.jelly-quote-card--static):hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow:
     0 0 0 1px color-mix(in srgb, #fff 50%, transparent) inset,
@@ -3926,12 +3943,12 @@ html[data-theme="dark"] .jelly-quote-card {
 }
 
 .jelly-cta-band-title {
-  font-family: var(--font-hand), cursive;
-  font-size: clamp(1.45rem, 3.5vw, 1.95rem);
-  font-weight: 700;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.55rem, 3.6vw, 2.05rem);
+  font-weight: 800;
   color: var(--ink);
-  letter-spacing: -0.01em;
-  line-height: 1.15;
+  letter-spacing: -0.026em;
+  line-height: 1.1;
 }
 
 .jelly-cta-band-copy {
@@ -5101,9 +5118,9 @@ html[data-theme="dark"] .jelly-section-geo {
   left: -6%;
   right: auto;
   top: auto;
-  width: min(52vw, 22rem);
-  max-height: 13rem;
-  opacity: 0.1;
+  width: min(40vw, 18rem);
+  max-height: 11rem;
+  opacity: 0.04;
 }
 
 .jelly-section-geo--studio-accent {
@@ -6229,12 +6246,34 @@ html[data-theme="dark"] .jelly-hero-anotherly-word {
   }
 }
 
-/* Photo mock — gradient wordmark */
+/* Photo mock — motion gradient on “anotherly”: subtle premium shift, slightly quicker so it feels alive */
 .jelly-hero-anotherly-word--photo {
-  animation: none !important;
-  background-size: 105% 100%;
+  animation: jelly-anotherly-photo-flow 11s ease-in-out infinite !important;
+  background-size: 280% 100%;
   background-position: 0% 50%;
-  background-image: linear-gradient(92deg, #ffb08e 0%, #ff7bc5 42%, #c084fc 72%, #8a4fff 100%) !important;
+  background-image: linear-gradient(
+    96deg,
+    #ff7e3d 0%,
+    #ff5fa8 22%,
+    #c084fc 48%,
+    #8a4fff 70%,
+    #5b8cff 90%,
+    #ff7e3d 100%
+  ) !important;
+  filter: drop-shadow(0 4px 22px color-mix(in srgb, #8a4fff 28%, transparent));
+}
+
+@keyframes jelly-anotherly-photo-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-hero-anotherly-word--photo {
+    animation: none !important;
+    background-position: 22% 50% !important;
+  }
 }
 
 html[data-theme="dark"] .jelly-hero-anotherly-word--photo {
@@ -6292,13 +6331,22 @@ html[data-theme="dark"] .jelly-hero-anotherly-word--photo {
 .jelly-hero-photo-we {
   position: relative;
   z-index: 1;
-  font-size: clamp(2.85rem, 7.4vw, 4.85rem);
+  font-family: var(--font-hand), cursive;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 0.95;
+  font-size: clamp(2.85rem, 7vw, 4.85rem);
 }
 
 .jelly-hero-photo-we__w,
 .jelly-hero-photo-we__it {
   position: relative;
   display: inline-block;
+}
+
+.jelly-hero-photo-we__text {
+  position: relative;
+  z-index: 2;
 }
 
 .jelly-hero-photo-we__do {
@@ -6311,36 +6359,50 @@ html[data-theme="dark"] .jelly-hero-anotherly-word--photo {
   pointer-events: none;
   background: url(/assets/paint-splash.png) center / contain no-repeat;
   mix-blend-mode: multiply;
-  z-index: 0;
-  filter: saturate(1.25);
-  opacity: 0.26;
+  /* Sit behind the inline text inside .jelly-hero-photo-we__w / __it so the
+     "we"/"it" letters stay legible. Text in the same span paints in the
+     in-flow inline step (5), positioned splat at z=-1 paints in step 2. */
+  z-index: -1;
+  filter: saturate(1.32) contrast(1.04);
+  opacity: 0.95;
 }
 
 .jelly-hero-photo-splat--a {
-  width: min(5.5rem, 24vw);
-  height: min(4.6rem, 20vw);
+  width: min(6.5rem, 28vw);
+  height: min(5.4rem, 24vw);
   left: 50%;
   top: 50%;
-  transform: translate(-72%, -58%);
+  transform: translate(-66%, -54%) rotate(-9deg);
+  filter: saturate(1.32) hue-rotate(-14deg);
 }
 
 .jelly-hero-photo-splat--b {
-  width: min(6rem, 26vw);
-  height: min(5rem, 22vw);
+  width: min(7rem, 30vw);
+  height: min(5.8rem, 26vw);
   left: 50%;
   top: 50%;
-  transform: translate(-58%, -62%);
+  transform: translate(-50%, -58%) rotate(14deg);
+  filter: saturate(1.32) hue-rotate(32deg);
 }
 
 html[data-theme="dark"] .jelly-hero-photo-splat {
   mix-blend-mode: screen;
-  opacity: 0.18;
-  filter: saturate(1.1);
+  opacity: 0.72;
+  filter: saturate(1.15);
+}
+
+html[data-theme="dark"] .jelly-hero-photo-splat--a {
+  filter: saturate(1.18) hue-rotate(-20deg);
+}
+
+html[data-theme="dark"] .jelly-hero-photo-splat--b {
+  filter: saturate(1.18) hue-rotate(40deg);
 }
 
 .jelly-hero-photo__brand.jelly-hero-h1--anotherly {
-  font-size: clamp(3.1rem, 10vw, 5.25rem);
+  font-size: clamp(3.4rem, 9.2vw, 6.6rem);
   line-height: 0.94;
+  margin-top: clamp(0.35rem, 1.2vw, 0.85rem);
 }
 
 .jelly-hero-sub--photo {
@@ -6409,11 +6471,11 @@ html[data-theme="dark"] .jelly-hero-sub--photo {
 }
 
 .jelly-polaroid--ref.jelly-polaroid--photo-ref {
-  animation: none !important;
+  /* Inner sway runs at rest; framer-motion drives the outer wrap (scroll-linked) so the two compose */
+  animation: jelly-polaroid-rest-sway 5.2s ease-in-out infinite;
+  transform-origin: 50% 6%;
   border-radius: 18px;
   background: linear-gradient(160deg, rgba(255, 254, 249, 1) 0%, rgba(255, 247, 240, 1) 100%);
-  /* Rotation lives on .jelly-hero-photo__polaroid-wrap (motion) only — avoids double tilt with CSS + Framer */
-  transform: none;
   /* Authentic polaroid: thin top/sides, generous bottom frame */
   padding: 0.65rem 0.7rem 2.4rem;
   max-width: min(20rem, 88vw);
@@ -6424,6 +6486,18 @@ html[data-theme="dark"] .jelly-hero-sub--photo {
     0 36px 70px color-mix(in srgb, var(--play-purple) 22%, rgba(0, 0, 0, 0.18)),
     0 14px 26px rgba(0, 0, 0, 0.12),
     0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes jelly-polaroid-rest-sway {
+  0%, 100% { transform: rotate(-1.4deg) translateY(0); }
+  50%      { transform: rotate(1.4deg)  translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-polaroid--ref.jelly-polaroid--photo-ref {
+    animation: none;
+    transform: none;
+  }
 }
 
 html[data-theme="dark"] .jelly-polaroid--ref.jelly-polaroid--photo-ref {
@@ -7298,43 +7372,67 @@ html[data-theme="dark"] .jelly-hero-splash-ambient {
 }
 
 .jelly-quote-card.jelly-quote-card--wash-0 {
-  border-color: color-mix(in srgb, var(--play-peach-deep) 28%, var(--glass-border));
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, #fff 88%, var(--play-peach) 12%) 0%,
-    color-mix(in srgb, #fff 94%, transparent) 48%,
-    color-mix(in srgb, var(--bg-glass) 65%, transparent) 100%
-  );
+  border-color: color-mix(in srgb, var(--play-peach-deep) 45%, var(--glass-border));
+  background:
+    radial-gradient(
+      ellipse 95% 70% at 8% 0%,
+      color-mix(in srgb, var(--play-peach) 58%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, #fff 72%, var(--play-peach) 28%) 0%,
+      color-mix(in srgb, #fff 82%, var(--play-pink) 18%) 55%,
+      color-mix(in srgb, var(--bg-glass) 60%, transparent) 100%
+    );
 }
 
 .jelly-quote-card.jelly-quote-card--wash-1 {
-  border-color: color-mix(in srgb, var(--play-mint-deep) 26%, var(--glass-border));
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, #fff 90%, var(--play-mint) 10%) 0%,
-    color-mix(in srgb, #fff 96%, transparent) 55%,
-    color-mix(in srgb, var(--bg-glass) 62%, transparent) 100%
-  );
+  border-color: color-mix(in srgb, var(--play-mint-deep) 42%, var(--glass-border));
+  background:
+    radial-gradient(
+      ellipse 90% 65% at 100% 0%,
+      color-mix(in srgb, var(--play-mint) 55%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, #fff 70%, var(--play-mint) 30%) 0%,
+      color-mix(in srgb, #fff 82%, var(--play-sky, #b9e0ff) 20%) 55%,
+      color-mix(in srgb, var(--bg-glass) 58%, transparent) 100%
+    );
 }
 
 .jelly-quote-card.jelly-quote-card--wash-2 {
-  border-color: color-mix(in srgb, var(--play-pink) 30%, var(--glass-border));
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, #fff 86%, var(--play-pink) 11%) 0%,
-    color-mix(in srgb, #fff 93%, transparent) 50%,
-    color-mix(in srgb, var(--bg-glass) 64%, transparent) 100%
-  );
+  border-color: color-mix(in srgb, var(--play-pink) 48%, var(--glass-border));
+  background:
+    radial-gradient(
+      ellipse 95% 75% at 0% 100%,
+      color-mix(in srgb, var(--play-pink) 55%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, #fff 70%, var(--play-pink) 28%) 0%,
+      color-mix(in srgb, #fff 80%, var(--play-purple) 18%) 55%,
+      color-mix(in srgb, var(--bg-glass) 60%, transparent) 100%
+    );
 }
 
 .jelly-quote-card.jelly-quote-card--wash-3 {
-  border-color: color-mix(in srgb, var(--play-purple) 28%, var(--glass-border));
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, #fff 87%, var(--play-purple) 9%) 0%,
-    color-mix(in srgb, #fff 94%, transparent) 52%,
-    color-mix(in srgb, var(--bg-glass) 66%, transparent) 100%
-  );
+  border-color: color-mix(in srgb, var(--play-purple) 42%, var(--glass-border));
+  background:
+    radial-gradient(
+      ellipse 95% 70% at 100% 100%,
+      color-mix(in srgb, var(--play-purple) 55%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, #fff 70%, var(--play-purple) 28%) 0%,
+      color-mix(in srgb, #fff 82%, var(--play-mint) 16%) 55%,
+      color-mix(in srgb, var(--bg-glass) 62%, transparent) 100%
+    );
 }
 
 html[data-theme="dark"] .jelly-quote-card.jelly-quote-card--wash-0 {
@@ -7761,4 +7859,461 @@ html[data-theme="dark"] .jelly-journal-card__body {
 
 html[data-theme="dark"] .jelly-journal-featured__body {
   background: transparent;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Splash deco — paint-splash reused across sections with varied
+   hue, scale, rotation, and subtle opacity. Pointer-none, behind
+   content. Performance: single PNG, GPU-friendly transforms.
+   ────────────────────────────────────────────────────────────── */
+.jelly-splash-deco {
+  position: absolute;
+  pointer-events: none;
+  background: url(/assets/paint-splash.png) center / contain no-repeat;
+  mix-blend-mode: multiply;
+  z-index: 0;
+  will-change: transform;
+}
+
+html[data-theme="dark"] .jelly-splash-deco {
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.jelly-splash-deco--peach { filter: saturate(1.35) hue-rotate(-22deg); }
+.jelly-splash-deco--pink  { filter: saturate(1.25) hue-rotate(18deg); }
+.jelly-splash-deco--mint  { filter: saturate(1.25) hue-rotate(120deg); }
+.jelly-splash-deco--sky   { filter: saturate(1.2) hue-rotate(200deg); }
+.jelly-splash-deco--purple{ filter: saturate(1.3) hue-rotate(60deg); }
+.jelly-splash-deco--butter{ filter: saturate(1.4) hue-rotate(-50deg); }
+
+.jelly-splash-deco--xs { width: clamp(5rem, 10vw, 8rem); height: clamp(4rem, 8vw, 6.5rem); }
+.jelly-splash-deco--sm { width: clamp(7rem, 14vw, 11rem); height: clamp(5.5rem, 11vw, 9rem); }
+.jelly-splash-deco--md { width: clamp(10rem, 20vw, 16rem); height: clamp(8rem, 16vw, 13rem); }
+.jelly-splash-deco--lg { width: clamp(14rem, 28vw, 22rem); height: clamp(11rem, 22vw, 18rem); }
+
+/* ──────────────────────────────────────────────────────────────
+   Sketch / torn paper / soft grid utility helpers — purely CSS,
+   so they cost nothing at runtime.
+   ────────────────────────────────────────────────────────────── */
+.jelly-sketch-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image:
+    linear-gradient(to right, var(--ink) 0.6px, transparent 0.6px),
+    linear-gradient(to bottom, var(--ink) 0.6px, transparent 0.6px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, #000 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, #000 30%, transparent 92%);
+}
+
+html[data-theme="dark"] .jelly-sketch-grid {
+  opacity: 0.05;
+  background-image:
+    linear-gradient(to right, #fff 0.6px, transparent 0.6px),
+    linear-gradient(to bottom, #fff 0.6px, transparent 0.6px);
+}
+
+.jelly-sketch-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: repeating-linear-gradient(
+    -22deg,
+    transparent 0 18px,
+    var(--ink) 18px 19px
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+}
+
+html[data-theme="dark"] .jelly-sketch-lines {
+  opacity: 0.04;
+  background-image: repeating-linear-gradient(
+    -22deg,
+    transparent 0 18px,
+    #fff 18px 19px
+  );
+}
+
+.jelly-torn-top,
+.jelly-torn-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 14' preserveAspectRatio='none'><path d='M0 0h1200v6l-26 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2L0 14z' fill='white'/></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 0.5px color-mix(in srgb, var(--ink) 18%, transparent));
+}
+
+html[data-theme="dark"] .jelly-torn-top,
+html[data-theme="dark"] .jelly-torn-bottom {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 14' preserveAspectRatio='none'><path d='M0 0h1200v6l-26 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2-34 4-22-3-30 4-28-1-32 3-22-4-30 5-28-2L0 14z' fill='%2300000022'/></svg>");
+}
+
+.jelly-torn-top    { top: -1px; transform: rotate(180deg); }
+.jelly-torn-bottom { bottom: -1px; }
+
+.jelly-sketch-underline {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 14'><path d='M3 8c40-7 80-7 124-2 28 3 56 2 90-1' fill='none' stroke='%238a4fff' stroke-width='3' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.42em;
+  padding-bottom: 0.12em;
+}
+
+/* Script accent — small caveat flourish for select copy */
+.jelly-script-accent {
+  font-family: var(--font-hand), cursive;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  background: linear-gradient(110deg, #ff7e3d 0%, #ff5fa8 38%, #8a4fff 78%, #5b8cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Doodles — site-wide style hooks. Inline SVG via JellyDoodle
+   carries `stroke="currentColor"`, so set parent color + opacity
+   here for consistency across sections.
+   ────────────────────────────────────────────────────────────── */
+.jelly-doodle {
+  display: inline-block;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--play-purple) 64%, var(--ink));
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.jelly-doodle--peach  { color: color-mix(in srgb, var(--play-peach-deep) 78%, var(--ink) 22%); }
+.jelly-doodle--mint   { color: color-mix(in srgb, var(--play-mint-deep) 78%, var(--ink) 22%); }
+.jelly-doodle--pink   { color: color-mix(in srgb, var(--play-pink) 78%, var(--ink) 22%); }
+.jelly-doodle--purple { color: color-mix(in srgb, var(--play-purple) 70%, var(--ink) 30%); }
+.jelly-doodle--ink    { color: var(--ink); opacity: 0.6; }
+.jelly-doodle--soft   { opacity: 0.55; }
+
+html[data-theme="dark"] .jelly-doodle {
+  color: color-mix(in srgb, var(--play-purple) 60%, #ffffff 40%);
+  opacity: 0.75;
+}
+
+.jelly-doodle-spin {
+  animation: jelly-doodle-spin 22s linear infinite;
+}
+
+@keyframes jelly-doodle-spin {
+  to { transform: rotate(360deg); }
+}
+
+.jelly-doodle-twinkle {
+  animation: jelly-doodle-twinkle 4.8s ease-in-out infinite;
+}
+
+@keyframes jelly-doodle-twinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.85; }
+  50%      { transform: scale(1.12) rotate(8deg); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-doodle-spin,
+  .jelly-doodle-twinkle {
+    animation: none;
+  }
+}
+
+/* Section title gets a small hand-drawn doodle anchor; consistent across the site */
+.jelly-section-title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.jelly-section-title-row .jelly-section-title {
+  margin: 0;
+}
+
+.jelly-section-title-doodle {
+  flex-shrink: 0;
+  align-self: center;
+  width: clamp(2.2rem, 4vw, 3rem);
+  height: auto;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Header wordmark — split black + purple with flipped N and E
+   ────────────────────────────────────────────────────────────── */
+.jelly-header-wordmark--anotherly-mark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+}
+
+.jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter {
+  display: inline-block;
+  line-height: 1;
+}
+
+.jelly-header-wordmark--anotherly-mark .jelly-wordmark-flip {
+  transform: scaleX(-1);
+  display: inline-block;
+}
+
+.jelly-header-wordmark--anotherly-mark .jelly-wordmark-ly {
+  margin-left: 0.005em;
+  background: linear-gradient(118deg, #5b21b6 0%, #7c3aed 28%, #a78bfa 55%, #c084fc 80%, #5b21b6 100%);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: jelly-header-ly-flow 12s ease-in-out infinite;
+}
+
+@keyframes jelly-header-ly-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-header-wordmark--anotherly-mark .jelly-wordmark-ly {
+    animation: none;
+    background-position: 22% 50%;
+  }
+}
+
+html[data-theme="dark"] .jelly-header-wordmark--anotherly-mark,
+html[data-theme="dark"] .jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter {
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+}
+
+html[data-theme="dark"] .jelly-header-wordmark--anotherly-mark .jelly-wordmark-ly {
+  background: linear-gradient(118deg, #a78bfa 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Override the photo-match purple wash on the split wordmark so the “another” stays black */
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark,
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark:hover,
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter {
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+}
+
+.jelly-header-wordmark--anotherly-mark:hover .jelly-wordmark-letter:not(.jelly-wordmark-ly) {
+  color: color-mix(in srgb, var(--ink) 80%, var(--play-purple));
+  -webkit-text-fill-color: color-mix(in srgb, var(--ink) 80%, var(--play-purple));
+}
+
+/* The base .jelly-header-wordmark--ref pads the wordmark — keep the same hit area for the split mark */
+.jelly-header-wordmark--anotherly-mark {
+  font-weight: 800;
+  letter-spacing: -0.012em;
+}
+
+.jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter {
+  display: inline-block;
+  line-height: 1;
+  margin-right: 0.012em;
+}
+
+.jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter:last-child {
+  margin-right: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Combined Contact section — single panel for Begin the Dialogue
+   + form, on a torn-paper / sketch backdrop.
+   ────────────────────────────────────────────────────────────── */
+.jelly-contact-combined {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 4vw, 3rem);
+  position: relative;
+}
+
+@media (min-width: 880px) {
+  .jelly-contact-combined {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(2.25rem, 4.5vw, 3.5rem);
+    align-items: start;
+  }
+}
+
+.jelly-contact-combined__title {
+  font-family: var(--font-hand), cursive;
+  font-size: clamp(2.8rem, 6.5vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin: 0;
+  background: linear-gradient(106deg, #ff7e3d 0%, #ff5fa8 38%, #8a4fff 78%, #5b8cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: jelly-anotherly-photo-flow 18s ease-in-out infinite;
+  background-size: 240% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-contact-combined__title {
+    animation: none;
+    background-position: 22% 50%;
+  }
+}
+
+.jelly-contact-combined__eyebrow {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Page loader — sketch / torn paper stage with motion-gradient
+   anotherly wordmark. Lightweight (CSS animations only).
+   ────────────────────────────────────────────────────────────── */
+.jelly-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+  background: var(--cream-deep);
+  isolation: isolate;
+  pointer-events: auto;
+}
+
+.jelly-loader-overlay__paper {
+  position: absolute;
+  inset: 6vmin;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 255, 255, 0.7), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 250, 248, 0.96) 100%);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow: 0 32px 90px rgba(28, 34, 51, 0.12), 0 8px 22px rgba(28, 34, 51, 0.06);
+  overflow: hidden;
+}
+
+html[data-theme="dark"] .jelly-loader-overlay__paper {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%),
+    linear-gradient(180deg, rgba(18, 16, 32, 0.92), rgba(10, 8, 22, 0.96));
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.jelly-loader-overlay__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image:
+    linear-gradient(to right, var(--ink) 0.6px, transparent 0.6px),
+    linear-gradient(to bottom, var(--ink) 0.6px, transparent 0.6px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 35%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 35%, transparent 92%);
+}
+
+.jelly-loader-overlay__splash {
+  position: absolute;
+  pointer-events: none;
+  background: url(/assets/paint-splash.png) center / contain no-repeat;
+  mix-blend-mode: multiply;
+}
+
+html[data-theme="dark"] .jelly-loader-overlay__splash {
+  mix-blend-mode: screen;
+  opacity: 0.6;
+}
+
+.jelly-loader-overlay__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.jelly-loader-overlay__word {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  font-size: clamp(3.4rem, 11vw, 7rem);
+  line-height: 0.95;
+  background: linear-gradient(
+    96deg,
+    #ff7e3d 0%,
+    #ff5fa8 22%,
+    #c084fc 48%,
+    #8a4fff 70%,
+    #5b8cff 90%,
+    #ff7e3d 100%
+  );
+  background-size: 240% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: jelly-anotherly-photo-flow 6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 28px color-mix(in srgb, #8a4fff 28%, transparent));
+}
+
+.jelly-loader-overlay__caption {
+  font-family: var(--font-hand), cursive;
+  font-size: clamp(1rem, 2.2vw, 1.18rem);
+  color: color-mix(in srgb, var(--ink) 65%, var(--text-muted));
+  letter-spacing: 0.01em;
+}
+
+.jelly-loader-overlay__bar {
+  position: relative;
+  width: min(220px, 56vw);
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.jelly-loader-overlay__bar::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: -40%;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent 0%, #ff7e3d 25%, #c084fc 60%, #8a4fff 100%);
+  animation: jelly-loader-shuttle 1.05s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes jelly-loader-shuttle {
+  0%   { left: -40%; }
+  100% { left: 102%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-loader-overlay__word { animation: none; background-position: 22% 50%; }
+  .jelly-loader-overlay__bar::after { animation: none; left: 30%; }
 }

@@ -88,8 +88,8 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <ScrollProgress />
-      <JellyBackground />
       <div className="jelly-site-chrome relative z-10 box-border flex w-full min-w-0 flex-col items-stretch px-3 max-[380px]:px-2.5 sm:px-6">
+        <JellyBackground />
         <header
           ref={headerRef}
           className={[
@@ -104,11 +104,19 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
               <div className="jelly-header-float__bar jelly-header-float__bar--ref">
                 <Link
                   href="/"
-                  className="jelly-header-wordmark jelly-header-wordmark--ref font-display"
+                  className="jelly-header-wordmark jelly-header-wordmark--ref jelly-header-wordmark--anotherly-mark font-display"
                   aria-label="Anotherly home"
                   data-jelly-chrome-wordmark
                 >
-                  anotherly
+                  <span className="jelly-wordmark-letter">a</span>
+                  <span className="jelly-wordmark-letter jelly-wordmark-flip" aria-hidden>n</span>
+                  <span className="jelly-wordmark-letter">o</span>
+                  <span className="jelly-wordmark-letter">t</span>
+                  <span className="jelly-wordmark-letter">h</span>
+                  <span className="jelly-wordmark-letter jelly-wordmark-flip" aria-hidden>e</span>
+                  <span className="jelly-wordmark-letter">r</span>
+                  <span className="jelly-wordmark-letter jelly-wordmark-ly">l</span>
+                  <span className="jelly-wordmark-letter jelly-wordmark-ly">y</span>
                 </Link>
 
                 <nav
@@ -122,9 +130,6 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                       .join(" ")}
                   >
                     WORK
-                  </Link>
-                  <Link href="/#studio" className="jelly-header-float__link jelly-header-float__link--agency">
-                    STUDIO
                   </Link>
                   <Link
                     href="/services"
@@ -153,7 +158,7 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                 </nav>
 
                 <div className="jelly-header-float__endcap">
-                  <span className="hidden sm:inline-flex sm:items-center">
+                  <span className="inline-flex items-center">
                     <ThemeToggle variant="minimal" />
                   </span>
                   <Link
@@ -188,9 +193,6 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                     >
                       WORK
                     </Link>
-                    <Link href="/#studio" className="jelly-header-mobile-panel__link" onClick={() => setMenuOpen(false)}>
-                      STUDIO
-                    </Link>
                     <Link
                       href="/services"
                       className={["jelly-header-mobile-panel__link", pathname === "/services" ? "jelly-header-mobile-panel__link--active" : ""]
@@ -221,9 +223,6 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
                     <Link href="/contact" className="jelly-header-mobile-panel__cta" onClick={() => setMenuOpen(false)}>
                       Let&apos;s Talk
                     </Link>
-                    <div className="jelly-header-mobile-panel__theme-row flex justify-center pt-2">
-                      <ThemeToggle variant="minimal" />
-                    </div>
                   </nav>
                 </div>
               ) : null}
@@ -233,7 +232,7 @@ export function JellySiteLayout({ children }: { children: ReactNode }) {
 
         <div className="jelly-header-spacer shrink-0" style={{ height: spacerPx }} aria-hidden />
 
-        <div className="jelly-main-panel relative z-[1] flex w-full min-w-0 flex-col">
+        <div className="jelly-main-panel relative flex w-full min-w-0 flex-col">
           <main className="jelly-panel-main flex min-w-0 flex-col">{children}</main>
           <JellyFooter />
         </div>

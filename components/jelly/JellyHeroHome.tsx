@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { JellyDoodle } from "@/components/jelly/JellyDoodle";
 
 const MotionLink = motion(Link);
 
@@ -23,10 +24,10 @@ export function JellyHeroHome() {
   const polaroidX = useTransform(scrollYProgress, [0, 0.5, 1], reduce ? [0, 0, 0] : [0, -10, -22]);
   const polaroidScale = useTransform(scrollYProgress, [0, 0.4, 1], reduce ? [1, 1, 1] : [1, 1.03, 0.98]);
 
-  const polaroidSpringY = useSpring(polaroidY, { stiffness: 160, damping: 16, mass: 0.38 });
-  const polaroidSpringRot = useSpring(polaroidRot, { stiffness: 120, damping: 18, mass: 0.35 });
-  const polaroidSpringX = useSpring(polaroidX, { stiffness: 140, damping: 17, mass: 0.34 });
-  const polaroidSpringScale = useSpring(polaroidScale, { stiffness: 100, damping: 22, mass: 0.4 });
+  const polaroidSpringY = useSpring(polaroidY, { stiffness: 220, damping: 17, mass: 0.32 });
+  const polaroidSpringRot = useSpring(polaroidRot, { stiffness: 180, damping: 18, mass: 0.3 });
+  const polaroidSpringX = useSpring(polaroidX, { stiffness: 200, damping: 17, mass: 0.3 });
+  const polaroidSpringScale = useSpring(polaroidScale, { stiffness: 150, damping: 22, mass: 0.35 });
 
   return (
     <section
@@ -35,29 +36,50 @@ export function JellyHeroHome() {
       aria-labelledby="jelly-hero-heading"
       data-jelly-hero
     >
+      <span
+        className="jelly-splash-deco jelly-splash-deco--lg jelly-splash-deco--purple pointer-events-none absolute -left-[6%] -top-[10%] -z-[0] opacity-[0.12]"
+        style={{ transform: "rotate(-18deg) scale(0.95)" }}
+        aria-hidden
+      />
+      <span
+        className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--mint pointer-events-none absolute right-[2%] bottom-[-8%] -z-[0] opacity-[0.14]"
+        style={{ transform: "rotate(26deg) scale(0.9)" }}
+        aria-hidden
+      />
+
       <motion.div
         className="jelly-hero-photo__inner relative z-[1] mx-auto w-full max-w-[min(72rem,calc(100%-2rem))]"
         style={{ y: blockY, opacity: blockOpacity }}
       >
         <div className="jelly-hero-photo__grid">
           <div className="jelly-hero-photo__main min-w-0">
-            <p className="jelly-hero-photo-we font-hand m-0 font-bold leading-[1.05] tracking-tight text-[var(--ink)]">
+            <p className="jelly-hero-photo-we m-0 tracking-tight text-[var(--ink)]">
               <span className="jelly-hero-photo-we__w">
                 <span className="jelly-hero-photo-splat jelly-hero-photo-splat--a" aria-hidden />
-                we
+                <span className="jelly-hero-photo-we__text">we</span>
               </span>
               <span className="jelly-hero-photo-we__do"> do </span>
               <span className="jelly-hero-photo-we__it">
                 <span className="jelly-hero-photo-splat jelly-hero-photo-splat--b" aria-hidden />
-                it
+                <span className="jelly-hero-photo-we__text">it</span>
               </span>
+              <JellyDoodle
+                variant="sparkle"
+                className="jelly-doodle jelly-doodle--peach jelly-doodle-twinkle ml-2 inline-block h-[0.55em] w-[0.55em] align-[0.18em]"
+              />
             </p>
 
             <h1
               id="jelly-hero-heading"
               className="jelly-hero-photo__brand jelly-hero-h1 jelly-hero-h1--anotherly relative m-0 mt-3 inline-block max-w-full font-display font-extrabold tracking-[-0.05em] sm:mt-4"
             >
-              <span className="jelly-hero-anotherly-word jelly-hero-anotherly-word--photo">anotherly</span>
+              <span className="jelly-hero-anotherly-word jelly-hero-anotherly-word--photo">
+                anotherly
+              </span>
+              <JellyDoodle
+                variant="underline"
+                className="jelly-doodle jelly-doodle--purple pointer-events-none absolute -bottom-[0.15em] left-[2%] h-[0.18em] w-[96%] opacity-60"
+              />
             </h1>
 
             <p className="jelly-hero-sub--photo mt-5 max-w-[34rem] font-display text-[1.2rem] font-medium leading-[1.5] tracking-[-0.018em] text-[var(--ink)] sm:mt-6 sm:text-[1.35rem]">
@@ -73,16 +95,18 @@ export function JellyHeroHome() {
                 whileHover={reduce ? undefined : { y: -2 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
               >
-                See the work ↗
+                See the work
+                <JellyDoodle variant="arrow" className="ml-2 h-[0.8em] w-[1.5em]" strokeWidth={2} />
               </MotionLink>
               <MotionLink
-                href="/#studio"
+                href="/#how-we-work"
                 className="jelly-cta-misfits jelly-cta-misfits--photo w-full sm:w-auto"
                 draggable={false}
                 whileHover={reduce ? undefined : { y: -2 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
               >
-                Meet the misfits ✦
+                Meet the misfits
+                <JellyDoodle variant="sparkle" className="ml-2 h-[0.85em] w-[0.85em] jelly-doodle-twinkle" strokeWidth={2} />
               </MotionLink>
             </div>
           </div>
@@ -105,10 +129,10 @@ export function JellyHeroHome() {
                 <div className="jelly-polaroid__inner jelly-polaroid__inner--photo">
                   <div className="jelly-polaroid__img-wrap jelly-polaroid__img-wrap--photo">
                     <Image
-                      src="/assets/hero-section-small-image.png"
-                      alt="Hand holding a yellow creative mood board with sketches and color swatches."
-                      width={960}
-                      height={960}
+                      src="/assets/polaroid-hero.png"
+                      alt="Polaroid photo in the hero."
+                      width={1024}
+                      height={1024}
                       className="jelly-polaroid__img jelly-polaroid__img--natural"
                       sizes="(max-width: 1024px) 78vw, 320px"
                       priority

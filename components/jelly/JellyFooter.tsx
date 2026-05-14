@@ -5,7 +5,7 @@ export function JellyFooter() {
     <footer className="jelly-site-footer jelly-site-footer--play jelly-slab-width px-6 py-7 sm:px-8">
       <div className="flex flex-col items-center gap-6 md:flex-row md:items-center md:justify-between md:gap-8">
         <p className="jelly-footer-tagline text-center text-[0.8125rem] leading-relaxed text-[var(--ink)] sm:text-sm md:text-left">
-          © anotherly {new Date().getFullYear()} · Not your average studio · Delhi · Berlin · Remote but loud
+          © anotherly {new Date().getFullYear()}
         </p>
 
         <nav
