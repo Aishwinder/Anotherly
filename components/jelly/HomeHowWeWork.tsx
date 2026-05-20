@@ -6,10 +6,8 @@ import { useRef } from "react";
 import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGlassSlab";
 import { howWeWorkSteps } from "@/lib/home-content";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
-import { JellyDoodle, type JellyDoodleVariant } from "@/components/jelly/JellyDoodle";
-
-const STEP_DOODLES: JellyDoodleVariant[] = ["sparkle", "loop", "asterisk", "burst", "circle-scribble"];
-const STEP_DOODLE_TONES = ["peach", "mint", "pink", "purple", "peach"] as const;
+import { JellyDoodle } from "@/components/jelly/JellyDoodle";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 
 function HowWeWorkStep({
   step,
@@ -41,17 +39,10 @@ function HowWeWorkStep({
     reduce ? [0, 0] : [-2.2, 0],
   );
 
-  const doodleVariant = STEP_DOODLES[index % STEP_DOODLES.length];
-  const doodleTone = STEP_DOODLE_TONES[index % STEP_DOODLE_TONES.length];
-
   return (
     <motion.li className="jelly-how-work-step" style={{ x, opacity, rotate }}>
-      <span className="jelly-how-work-step__index relative" aria-hidden>
+      <span className="jelly-how-work-step__index" aria-hidden>
         {String(index + 1).padStart(2, "0")}
-        <JellyDoodle
-          variant={doodleVariant}
-          className={`jelly-doodle jelly-doodle--${doodleTone} jelly-doodle-twinkle pointer-events-none absolute -right-3 -top-2 h-4 w-4 opacity-70`}
-        />
       </span>
       <div className="jelly-how-work-step__body">
         <h3 className="jelly-how-work-step__title">{step.title}</h3>
@@ -89,30 +80,10 @@ export function HomeHowWeWork() {
     <section ref={sectionRef} className="scroll-mt-28" id="how-we-work" aria-labelledby="how-we-work-heading">
       <JellyGlassSlab className="relative overflow-hidden">
         <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
-        <JellySectionGeo variant="orbit" />
-        <span
-          className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--sky pointer-events-none absolute -right-[4%] top-[4%] -z-0 opacity-[0.12]"
-          style={{ transform: "rotate(16deg) scale(0.92)" }}
-          aria-hidden
-        />
-        <span
-          className="jelly-splash-deco jelly-splash-deco--sm jelly-splash-deco--butter pointer-events-none absolute -left-[3%] bottom-[6%] -z-0 opacity-[0.16]"
-          style={{ transform: "rotate(-26deg) scale(0.9)" }}
-          aria-hidden
-        />
-        <span
-          className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--peach pointer-events-none absolute right-[12%] bottom-[18%] -z-0 opacity-[0.18]"
-          style={{ transform: "rotate(-40deg) scale(0.6)" }}
-          aria-hidden
-        />
-        <JellyDoodle
-          variant="wave"
-          className="jelly-doodle jelly-doodle--purple pointer-events-none absolute right-[5%] top-[16%] h-4 w-32 opacity-40"
-        />
-        <JellyDoodle
-          variant="circle-scribble"
-          className="jelly-doodle jelly-doodle--mint pointer-events-none absolute left-[5%] top-[8%] h-9 w-9 opacity-35"
-        />
+        <JellySectionGeo variant="orbit" className="opacity-[0.04] dark:opacity-[0.09]" />
+
+        <JellyThemeDeco preset="howWeWork" placement="bottom-left" />
+        <JellyThemeDeco preset="howWeWorkStar" placement="top-right" className="hidden sm:block" />
 
         <div className="jelly-how-work-grid relative z-[1]">
           <div className="jelly-how-work-main min-w-0">
@@ -123,7 +94,7 @@ export function HomeHowWeWork() {
               </h2>
               <JellyDoodle
                 variant="sparkle"
-                className="jelly-doodle jelly-doodle--purple jelly-doodle-twinkle jelly-section-title-doodle"
+                className="jelly-doodle jelly-doodle--purple jelly-doodle-twinkle jelly-section-title-doodle opacity-80"
               />
             </div>
             <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-2xl text-[var(--text-muted)]">
@@ -150,16 +121,12 @@ export function HomeHowWeWork() {
           >
             <div className="jelly-how-work-aside__card relative overflow-hidden">
               <div className="jelly-how-work-aside__mesh" aria-hidden />
-              <span
-                className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--pink pointer-events-none absolute -right-[12%] -top-[20%] opacity-[0.28] rotate-[18deg]"
-                aria-hidden
-              />
               <p className="jelly-how-work-aside__kicker relative">Studio principles</p>
               <div className="jelly-how-work-aside__rule" aria-hidden />
               <p className="jelly-how-work-aside__micro relative">
                 A small, opinionated team — fewer handoffs, more continuity from{" "}
-                <span className="jelly-script-accent">strategy</span> to launch. We hold the work close until
-                it&apos;s ready to be loud.
+                <span className="jelly-script-accent">strategy</span> to launch. We hold the work close until it&apos;s
+                ready to be loud.
               </p>
               <ul className="jelly-how-work-aside__ticks relative">
                 {principles.map((p) => (
@@ -193,6 +160,7 @@ export function HomeHowWeWork() {
             </div>
 
             <div className="jelly-how-work-aside__card relative mt-5 overflow-hidden">
+              <JellyThemeDeco preset="howWeWorkAside" placement="top-right" />
               <p className="jelly-how-work-aside__kicker relative">Typical engagement</p>
               <div className="jelly-how-work-aside__rule" aria-hidden />
               <dl className="relative mt-4 grid grid-cols-2 gap-4 text-[0.82rem]">

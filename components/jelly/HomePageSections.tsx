@@ -7,6 +7,7 @@ import { HomeHowWeWork } from "@/components/jelly/HomeHowWeWork";
 import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGlassSlab";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { JellyDoodle } from "@/components/jelly/JellyDoodle";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import { homeTestimonials } from "@/lib/home-content";
 
 export function HomePageSections() {
@@ -20,24 +21,7 @@ export function HomePageSections() {
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
           <JellySectionGeo variant="arc" />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--peach pointer-events-none absolute -top-[3%] right-[2%] -z-0 opacity-[0.16]"
-            style={{ transform: "rotate(22deg) scale(0.94)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--mint pointer-events-none absolute left-[5%] bottom-[8%] -z-0 opacity-[0.18]"
-            style={{ transform: "rotate(-34deg) scale(0.7)" }}
-            aria-hidden
-          />
-          <JellyDoodle
-            variant="circle-scribble"
-            className="jelly-doodle jelly-doodle--purple pointer-events-none absolute right-[6%] top-[6%] h-12 w-12 opacity-30"
-          />
-          <JellyDoodle
-            variant="dot-trail"
-            className="jelly-doodle jelly-doodle--ink pointer-events-none absolute left-[6%] top-[12%] h-3 w-16 opacity-50"
-          />
+          <JellyThemeDeco preset="services" placement="top-right" />
           <JellyReveal className="relative z-[1]" variant="lift">
             <p className="jelly-section-eyebrow">Services</p>
             <div className="jelly-section-title-row">
@@ -46,7 +30,7 @@ export function HomePageSections() {
               </h2>
               <JellyDoodle
                 variant="sparkle"
-                className="jelly-doodle jelly-doodle--peach jelly-doodle-twinkle jelly-section-title-doodle"
+                className="jelly-doodle jelly-doodle--peach jelly-doodle-twinkle jelly-section-title-doodle opacity-[0.85]"
               />
             </div>
             <p className="jelly-section-lead jelly-section-lead--relaxed max-w-xl">
@@ -63,29 +47,8 @@ export function HomePageSections() {
       <section className="scroll-mt-24" id="testimonials" aria-labelledby="testimonials-heading">
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--pink pointer-events-none absolute -left-[5%] top-[6%] -z-0 opacity-[0.12]"
-            style={{ transform: "rotate(-14deg)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--sm jelly-splash-deco--mint pointer-events-none absolute right-[3%] bottom-[4%] -z-0 opacity-[0.14]"
-            style={{ transform: "rotate(34deg) scale(0.92)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--purple pointer-events-none absolute right-[10%] top-[12%] -z-0 opacity-[0.14]"
-            style={{ transform: "rotate(18deg) scale(0.62)" }}
-            aria-hidden
-          />
-          <JellyDoodle
-            variant="asterisk"
-            className="jelly-doodle jelly-doodle--pink jelly-doodle-spin pointer-events-none absolute right-[6%] top-[8%] h-8 w-8 opacity-50"
-          />
-          <JellyDoodle
-            variant="squiggle"
-            className="jelly-doodle jelly-doodle--purple pointer-events-none absolute left-[7%] bottom-[12%] h-3 w-24 opacity-40"
-          />
+          <JellyThemeDeco preset="testimonials" placement="center-left" />
+          <JellyThemeDeco preset="testimonialsStar" placement="top-right" className="hidden md:block" />
           <JellyReveal className="relative z-[1]" variant="zoom">
             <p className="jelly-section-eyebrow">Testimonials</p>
             <div className="jelly-section-title-row">
@@ -94,7 +57,7 @@ export function HomePageSections() {
               </h2>
               <JellyDoodle
                 variant="asterisk"
-                className="jelly-doodle jelly-doodle--pink jelly-section-title-doodle"
+                className="jelly-doodle jelly-doodle--purple jelly-section-title-doodle opacity-75"
               />
             </div>
             <p className="jelly-section-lead jelly-section-lead--relaxed mt-4 max-w-xl">
@@ -131,25 +94,8 @@ export function HomePageSections() {
       <section className="pb-2 sm:pb-4" aria-labelledby="final-cta-heading">
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
-          <JellySectionGeo variant="arc" className="jelly-section-geo--lines opacity-[0.06]" />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--purple pointer-events-none absolute -right-[5%] top-[-10%] -z-0 opacity-[0.16]"
-            style={{ transform: "rotate(38deg) scale(0.88)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--peach pointer-events-none absolute left-[8%] bottom-[10%] -z-0 opacity-[0.16]"
-            style={{ transform: "rotate(-22deg) scale(0.7)" }}
-            aria-hidden
-          />
-          <JellyDoodle
-            variant="loop"
-            className="jelly-doodle jelly-doodle--mint pointer-events-none absolute right-[8%] bottom-[10%] h-10 w-10 opacity-50"
-          />
-          <JellyDoodle
-            variant="dot-trail"
-            className="jelly-doodle jelly-doodle--ink pointer-events-none absolute left-[6%] top-[12%] h-3 w-16 opacity-50"
-          />
+          <JellySectionGeo variant="arc" className="jelly-section-geo--lines opacity-[0.04] dark:opacity-[0.08]" />
+          <JellyThemeDeco preset="finalCta" placement="bottom-right" />
           <JellyReveal variant="lift">
             <div className="relative z-[1] flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between sm:gap-11">
               <div className="min-w-0 max-w-xl">
@@ -158,8 +104,8 @@ export function HomePageSections() {
                     When you&apos;re ready
                   </h2>
                   <JellyDoodle
-                    variant="sparkle"
-                    className="jelly-doodle jelly-doodle--purple jelly-doodle-twinkle jelly-section-title-doodle"
+                    variant="burst"
+                    className="jelly-doodle jelly-doodle--mint jelly-section-title-doodle opacity-70"
                   />
                 </div>
                 <p className="jelly-cta-band-copy mt-4">

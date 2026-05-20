@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { JellyDoodle } from "@/components/jelly/JellyDoodle";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 
 const LOADER_DONE = "jelly-loader-done";
 
@@ -71,41 +72,15 @@ export function PageLoader() {
         >
           <div className="jelly-loader-overlay__paper">
             <div className="jelly-loader-overlay__grid" aria-hidden />
-            <span
-              className="jelly-loader-overlay__splash jelly-splash-deco--peach"
-              aria-hidden
-              style={{
-                left: "-6%",
-                top: "-8%",
-                width: "min(22rem, 40vmin)",
-                height: "min(18rem, 32vmin)",
-                opacity: 0.5,
-                transform: "rotate(-14deg)",
-              }}
+            <JellyThemeDeco
+              preset="loaderA"
+              placement="top-left"
+              className="jelly-loader-overlay__splash !left-[-6%] !top-[-8%] !h-[min(18rem,32vmin)] !w-[min(22rem,40vmin)] !translate-x-0 !translate-y-0"
             />
-            <span
-              className="jelly-loader-overlay__splash jelly-splash-deco--purple"
-              aria-hidden
-              style={{
-                right: "-5%",
-                bottom: "-9%",
-                width: "min(20rem, 38vmin)",
-                height: "min(16rem, 30vmin)",
-                opacity: 0.45,
-                transform: "rotate(18deg)",
-              }}
-            />
-            <span
-              className="jelly-loader-overlay__splash jelly-splash-deco--mint"
-              aria-hidden
-              style={{
-                right: "6%",
-                top: "8%",
-                width: "min(8rem, 18vmin)",
-                height: "min(6rem, 14vmin)",
-                opacity: 0.45,
-                transform: "rotate(28deg)",
-              }}
+            <JellyThemeDeco
+              preset="loaderB"
+              placement="bottom-right"
+              className="jelly-loader-overlay__splash !bottom-[-9%] !right-[-5%] !h-[min(16rem,30vmin)] !w-[min(20rem,38vmin)] !translate-x-0 !translate-y-0"
             />
 
             <div className="jelly-loader-overlay__content">

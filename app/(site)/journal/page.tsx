@@ -4,6 +4,7 @@ import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGl
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftMotif } from "@/components/jelly/PageCraftMotif";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -106,6 +107,8 @@ export default function JournalPage() {
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
           <JellySectionGeo variant="orbit" className="opacity-[0.08]" />
+          <JellyThemeDeco preset="journalPage" placement="top-right" />
+          <JellyThemeDeco preset="testimonials" placement="bottom-left" className="hidden sm:block" />
           <JellyReveal variant="lift">
             <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-12">
               <div className="min-w-0 max-w-3xl">

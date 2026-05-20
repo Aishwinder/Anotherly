@@ -3,6 +3,7 @@ import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGl
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftMotif } from "@/components/jelly/PageCraftMotif";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import { ProjectsStreamStack } from "@/components/jelly/ProjectsStreamStack";
 import { brandingProjects, websiteProjects } from "@/lib/site";
 import type { Metadata } from "next";
@@ -23,6 +24,8 @@ export default function ProjectsPage() {
       <div className="projects-page-intro-wrap relative z-[1] mb-10 sm:mb-12 md:mb-14">
         <JellyGlassSlab className="jelly-projects-page-intro-slab relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
+          <JellyThemeDeco preset="projectsPage" placement="top-right" />
+          <JellyThemeDeco preset="finalCta" placement="bottom-left" className="hidden md:block" />
           <div className="relative z-[1] flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
             <JellyReveal className="min-w-0 max-w-xl flex-1" variant="lift">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--text-muted)]">Selected work</p>

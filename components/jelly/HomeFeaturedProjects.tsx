@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGlassSlab";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { featuredProjectsForHome } from "@/lib/site";
 
@@ -11,8 +12,10 @@ export function HomeFeaturedProjects() {
 
   return (
     <section aria-labelledby="featured-projects-heading">
-      <JellyGlassSlab className="relative overflow-hidden">
-        <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
+        <JellyGlassSlab className="relative overflow-hidden">
+          <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
+          <JellyThemeDeco preset="featured" placement="top-right" />
+          <JellyThemeDeco preset="howWeWorkStar" placement="bottom-left" className="hidden lg:block" />
         <div className="jelly-featured-projects-intro relative z-[1]">
           <JellyReveal variant="lift">
             <p className="jelly-section-eyebrow">Selected work</p>

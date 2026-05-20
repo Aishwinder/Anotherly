@@ -3,6 +3,7 @@ import { JellyGlassSlab, JellySectionBackdrop } from "@/components/jelly/JellyGl
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { PageCraftGrid, PageCraftMotif } from "@/components/jelly/PageCraftMotif";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import { ServicesShowcaseCarousel } from "@/components/jelly/ServicesShowcaseCarousel";
 import { bundleDiscountCopy, mainServices, websiteCarePlans } from "@/lib/services-detail";
 import { Globe, Megaphone, Palette } from "lucide-react";
@@ -30,6 +31,8 @@ export default function ServicesPage() {
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
           <JellySectionGeo variant="arc" className="jelly-section-geo--services" />
+          <JellyThemeDeco preset="servicesPage" placement="bottom-left" />
+          <JellyThemeDeco preset="howWeWorkStar" placement="top-right" className="hidden sm:block" />
           <JellyReveal variant="lift">
             <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-12">
               <div className="min-w-0 max-w-3xl">

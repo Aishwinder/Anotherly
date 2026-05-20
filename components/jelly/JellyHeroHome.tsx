@@ -5,8 +5,12 @@ import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { JellyDoodle } from "@/components/jelly/JellyDoodle";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 
 const MotionLink = motion(Link);
+
+const HERO_MANIFESTO =
+  "Most brands are built to impress and websites built to fill space — cluttered, loud, noise dressed up as identity. Yours should do neither. It should connect, say something true, and feel like you before anyone reads a single word. We do the opposite of everything you've seen. Less, but felt more.";
 
 export function JellyHeroHome() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -36,24 +40,16 @@ export function JellyHeroHome() {
       aria-labelledby="jelly-hero-heading"
       data-jelly-hero
     >
-      <span
-        className="jelly-splash-deco jelly-splash-deco--lg jelly-splash-deco--purple pointer-events-none absolute -left-[6%] -top-[10%] -z-[0] opacity-[0.12]"
-        style={{ transform: "rotate(-18deg) scale(0.95)" }}
-        aria-hidden
-      />
-      <span
-        className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--mint pointer-events-none absolute right-[2%] bottom-[-8%] -z-[0] opacity-[0.14]"
-        style={{ transform: "rotate(26deg) scale(0.9)" }}
-        aria-hidden
-      />
+      <JellyThemeDeco preset="heroCorner" placement="top-left" />
+      <JellyThemeDeco preset="heroStar" placement="bottom-left" className="hidden sm:block" />
 
       <motion.div
         className="jelly-hero-photo__inner relative z-[1] mx-auto w-full max-w-[min(72rem,calc(100%-2rem))]"
         style={{ y: blockY, opacity: blockOpacity }}
       >
         <div className="jelly-hero-photo__grid">
-          <div className="jelly-hero-photo__main min-w-0">
-            <p className="jelly-hero-photo-we m-0 tracking-tight text-[var(--ink)]">
+          <div className="jelly-hero-photo__main relative min-w-0">
+            <p className="jelly-hero-photo-we relative z-[1] m-0 tracking-tight text-[var(--ink)]">
               <span className="jelly-hero-photo-we__w">
                 <span className="jelly-hero-photo-splat jelly-hero-photo-splat--a" aria-hidden />
                 <span className="jelly-hero-photo-we__text">we</span>
@@ -65,29 +61,28 @@ export function JellyHeroHome() {
               </span>
               <JellyDoodle
                 variant="sparkle"
-                className="jelly-doodle jelly-doodle--peach jelly-doodle-twinkle ml-2 inline-block h-[0.55em] w-[0.55em] align-[0.18em]"
+                className="jelly-doodle jelly-doodle--purple ml-2 inline-block h-[0.5em] w-[0.5em] align-[0.2em] opacity-[0.62]"
               />
             </p>
 
             <h1
               id="jelly-hero-heading"
-              className="jelly-hero-photo__brand jelly-hero-h1 jelly-hero-h1--anotherly relative m-0 mt-3 inline-block max-w-full font-display font-extrabold tracking-[-0.05em] sm:mt-4"
+              className="jelly-hero-photo__brand jelly-hero-h1 jelly-hero-h1--anotherly relative z-[1] m-0 mt-3 inline-block max-w-full font-display font-extrabold tracking-[-0.05em] sm:mt-4"
             >
               <span className="jelly-hero-anotherly-word jelly-hero-anotherly-word--photo">
                 anotherly
               </span>
               <JellyDoodle
-                variant="underline"
-                className="jelly-doodle jelly-doodle--purple pointer-events-none absolute -bottom-[0.15em] left-[2%] h-[0.18em] w-[96%] opacity-60"
+                variant="wave"
+                className="jelly-doodle jelly-doodle--peach pointer-events-none absolute -bottom-[0.12em] left-0 h-[0.35em] w-[100%] max-w-none opacity-55 sm:left-[2%]"
               />
             </h1>
 
-            <p className="jelly-hero-sub--photo mt-5 max-w-[34rem] font-display text-[1.2rem] font-medium leading-[1.5] tracking-[-0.018em] text-[var(--ink)] sm:mt-6 sm:text-[1.35rem]">
-              A design agency that bends rules, colors outside lines, and turns &lsquo;what if&rsquo; into &lsquo;watch
-              this.&rsquo;
+            <p className="jelly-hero-sub--photo relative z-[1] mt-5 font-display font-medium text-[var(--ink)] sm:mt-6">
+              {HERO_MANIFESTO}
             </p>
 
-            <div className="jelly-hero-photo__ctas mt-7 flex flex-col items-stretch gap-3 sm:mt-8 sm:max-w-[18rem] sm:items-start">
+            <div className="jelly-hero-photo__ctas relative z-[1] mt-7 flex flex-col items-stretch gap-3 sm:mt-8 sm:max-w-[18rem] sm:items-start">
               <MotionLink
                 href="/projects"
                 className="jelly-cta-peach jelly-cta-peach--photo w-full sm:w-auto"
@@ -95,7 +90,7 @@ export function JellyHeroHome() {
                 whileHover={reduce ? undefined : { y: -2 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
               >
-                See the work
+                Our work
                 <JellyDoodle variant="arrow" className="ml-2 h-[0.8em] w-[1.5em]" strokeWidth={2} />
               </MotionLink>
               <MotionLink
@@ -105,8 +100,8 @@ export function JellyHeroHome() {
                 whileHover={reduce ? undefined : { y: -2 }}
                 whileTap={reduce ? undefined : { scale: 0.98 }}
               >
-                Meet the misfits
-                <JellyDoodle variant="sparkle" className="ml-2 h-[0.85em] w-[0.85em] jelly-doodle-twinkle" strokeWidth={2} />
+                Meet us
+                <JellyDoodle variant="squiggle" className="ml-2 h-[0.55em] w-[2.25em]" strokeWidth={2} />
               </MotionLink>
             </div>
           </div>

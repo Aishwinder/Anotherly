@@ -306,8 +306,8 @@ html[data-theme="dark"] .jelly-header-float--photo-match .jelly-header-float__ba
   background: linear-gradient(185deg, rgba(255, 255, 255, 0.09) 0%, rgba(20, 18, 34, 0.78) 100%);
 }
 
-.jelly-header-float--photo-match .jelly-header-wordmark--ref,
-.jelly-header-float--photo-match .jelly-header-wordmark--ref:hover {
+.jelly-header-float--photo-match .jelly-header-wordmark--ref:not(.jelly-header-wordmark--anotherly-mark),
+.jelly-header-float--photo-match .jelly-header-wordmark--ref:not(.jelly-header-wordmark--anotherly-mark):hover {
   color: #8a4fff;
   -webkit-text-fill-color: #8a4fff;
 }
@@ -6357,46 +6357,44 @@ html[data-theme="dark"] .jelly-hero-anotherly-word--photo {
 .jelly-hero-photo-splat {
   position: absolute;
   pointer-events: none;
-  background: url(/assets/paint-splash.png) center / contain no-repeat;
+  background: center / contain no-repeat;
+  /* Light: normal blend stays readable over pale glass; dark: multiply keeps ink depth */
   mix-blend-mode: multiply;
   /* Sit behind the inline text inside .jelly-hero-photo-we__w / __it so the
      "we"/"it" letters stay legible. Text in the same span paints in the
      in-flow inline step (5), positioned splat at z=-1 paints in step 2. */
   z-index: -1;
-  filter: saturate(1.32) contrast(1.04);
-  opacity: 0.95;
+  filter: saturate(1.1);
+  opacity: 0.88;
+}
+
+html[data-theme="light"] .jelly-hero-photo-splat {
+  mix-blend-mode: normal;
+  opacity: 0.38;
+  filter: saturate(1.02);
 }
 
 .jelly-hero-photo-splat--a {
+  background-image: url(/assets/theme/splatter-1.png);
   width: min(6.5rem, 28vw);
   height: min(5.4rem, 24vw);
   left: 50%;
   top: 50%;
   transform: translate(-66%, -54%) rotate(-9deg);
-  filter: saturate(1.32) hue-rotate(-14deg);
 }
 
 .jelly-hero-photo-splat--b {
+  background-image: url(/assets/theme/splatter-2.png);
   width: min(7rem, 30vw);
   height: min(5.8rem, 26vw);
   left: 50%;
   top: 50%;
   transform: translate(-50%, -58%) rotate(14deg);
-  filter: saturate(1.32) hue-rotate(32deg);
 }
 
 html[data-theme="dark"] .jelly-hero-photo-splat {
   mix-blend-mode: screen;
   opacity: 0.72;
-  filter: saturate(1.15);
-}
-
-html[data-theme="dark"] .jelly-hero-photo-splat--a {
-  filter: saturate(1.18) hue-rotate(-20deg);
-}
-
-html[data-theme="dark"] .jelly-hero-photo-splat--b {
-  filter: saturate(1.18) hue-rotate(40deg);
 }
 
 .jelly-hero-photo__brand.jelly-hero-h1--anotherly {
@@ -6407,9 +6405,12 @@ html[data-theme="dark"] .jelly-hero-photo-splat--b {
 
 .jelly-hero-sub--photo {
   font-weight: 500;
-  letter-spacing: -0.018em;
-  color: color-mix(in srgb, var(--ink) 92%, var(--text-muted)) !important;
-  text-wrap: balance;
+  letter-spacing: -0.012em;
+  font-size: clamp(1rem, 2.1vw, 1.125rem);
+  line-height: 1.62;
+  color: color-mix(in srgb, var(--ink) 94%, var(--text-muted)) !important;
+  text-wrap: pretty;
+  max-width: 38rem;
 }
 
 html[data-theme="dark"] .jelly-hero-sub--photo {
@@ -6471,7 +6472,6 @@ html[data-theme="dark"] .jelly-hero-sub--photo {
 }
 
 .jelly-polaroid--ref.jelly-polaroid--photo-ref {
-  /* Inner sway runs at rest; framer-motion drives the outer wrap (scroll-linked) so the two compose */
   animation: jelly-polaroid-rest-sway 5.2s ease-in-out infinite;
   transform-origin: 50% 6%;
   border-radius: 18px;
@@ -7869,28 +7869,100 @@ html[data-theme="dark"] .jelly-journal-featured__body {
 .jelly-splash-deco {
   position: absolute;
   pointer-events: none;
-  background: url(/assets/paint-splash.png) center / contain no-repeat;
-  mix-blend-mode: multiply;
+  background: url(/assets/theme/splatter-1.png) center / contain no-repeat;
+  mix-blend-mode: normal;
   z-index: 0;
   will-change: transform;
 }
 
-html[data-theme="dark"] .jelly-splash-deco {
-  mix-blend-mode: screen;
-  opacity: 0.55;
+/* Theme paint plates (from /public/assets/theme) — tinted variants reuse one asset with subtle hue shifts */
+.jelly-splash-deco--paint-1 {
+  background-image: url(/assets/theme/splatter-1.png);
 }
 
-.jelly-splash-deco--peach { filter: saturate(1.35) hue-rotate(-22deg); }
-.jelly-splash-deco--pink  { filter: saturate(1.25) hue-rotate(18deg); }
-.jelly-splash-deco--mint  { filter: saturate(1.25) hue-rotate(120deg); }
-.jelly-splash-deco--sky   { filter: saturate(1.2) hue-rotate(200deg); }
-.jelly-splash-deco--purple{ filter: saturate(1.3) hue-rotate(60deg); }
-.jelly-splash-deco--butter{ filter: saturate(1.4) hue-rotate(-50deg); }
+.jelly-splash-deco--paint-2 {
+  background-image: url(/assets/theme/splatter-2.png);
+}
+
+.jelly-splash-deco--paint-3 {
+  background-image: url(/assets/theme/splatter-3.png);
+}
+
+html[data-theme="light"] .jelly-splash-deco {
+  mix-blend-mode: normal;
+}
+
+html[data-theme="dark"] .jelly-splash-deco {
+  mix-blend-mode: screen;
+}
+
+/* Legacy tone hooks → align with curated theme splatters instead of hue-rotating generic splash */
+.jelly-splash-deco--peach { filter: saturate(1.06); }
+.jelly-splash-deco--pink { filter: saturate(1.04) hue-rotate(8deg); }
+.jelly-splash-deco--mint { filter: saturate(1.05) hue-rotate(165deg); }
+.jelly-splash-deco--sky { filter: saturate(1.04) hue-rotate(205deg); }
+.jelly-splash-deco--purple { filter: saturate(1.08) hue-rotate(260deg); }
+.jelly-splash-deco--butter { filter: saturate(1.06) hue-rotate(-35deg); }
 
 .jelly-splash-deco--xs { width: clamp(5rem, 10vw, 8rem); height: clamp(4rem, 8vw, 6.5rem); }
 .jelly-splash-deco--sm { width: clamp(7rem, 14vw, 11rem); height: clamp(5.5rem, 11vw, 9rem); }
 .jelly-splash-deco--md { width: clamp(10rem, 20vw, 16rem); height: clamp(8rem, 16vw, 13rem); }
 .jelly-splash-deco--lg { width: clamp(14rem, 28vw, 22rem); height: clamp(11rem, 22vw, 18rem); }
+
+/* Theme pack — splatters & star (see JellyThemeDeco) */
+.jelly-theme-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  mix-blend-mode: normal;
+  opacity: var(--theme-deco-o-light, 0.08);
+}
+
+html[data-theme="dark"] .jelly-theme-deco {
+  mix-blend-mode: screen;
+  opacity: var(--theme-deco-o-dark, 0.16);
+}
+
+.jelly-theme-deco--splatter {
+  aspect-ratio: 1.15 / 1;
+}
+
+.jelly-theme-deco--star {
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+.jelly-theme-deco--xs {
+  width: clamp(3.5rem, 7vw, 5.5rem);
+}
+.jelly-theme-deco--xs.jelly-theme-deco--star {
+  max-height: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.jelly-theme-deco--sm {
+  width: clamp(5rem, 10vw, 7.5rem);
+}
+.jelly-theme-deco--sm.jelly-theme-deco--star {
+  max-height: clamp(3rem, 6vw, 4.5rem);
+}
+
+.jelly-theme-deco--md {
+  width: clamp(7.5rem, 14vw, 11rem);
+}
+.jelly-theme-deco--md.jelly-theme-deco--star {
+  max-height: clamp(4rem, 8vw, 6rem);
+}
+
+.jelly-theme-deco--lg {
+  width: clamp(10rem, 20vw, 15rem);
+}
+.jelly-theme-deco--lg.jelly-theme-deco--star {
+  max-height: clamp(5rem, 10vw, 7.5rem);
+}
 
 /* ──────────────────────────────────────────────────────────────
    Sketch / torn paper / soft grid utility helpers — purely CSS,
@@ -8107,12 +8179,27 @@ html[data-theme="dark"] .jelly-header-wordmark--anotherly-mark .jelly-wordmark-l
   -webkit-text-fill-color: transparent;
 }
 
-/* Override the photo-match purple wash on the split wordmark so the “another” stays black */
+/* Photo-match header: “another” stays ink; “ly” keeps purple gradient (light + dark) */
 .jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark,
-.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark:hover,
-.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter {
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark:hover {
   color: var(--ink);
   -webkit-text-fill-color: var(--ink);
+}
+
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark .jelly-wordmark-letter:not(.jelly-wordmark-ly) {
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+}
+
+.jelly-header-float--photo-match .jelly-header-wordmark--anotherly-mark .jelly-wordmark-ly {
+  background: linear-gradient(118deg, #5b21b6 0%, #7c3aed 28%, #a78bfa 55%, #c084fc 80%, #5b21b6 100%);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: jelly-header-ly-flow 12s ease-in-out infinite;
 }
 
 .jelly-header-wordmark--anotherly-mark:hover .jelly-wordmark-letter:not(.jelly-wordmark-ly) {
@@ -8236,13 +8323,10 @@ html[data-theme="dark"] .jelly-loader-overlay__paper {
 .jelly-loader-overlay__splash {
   position: absolute;
   pointer-events: none;
-  background: url(/assets/paint-splash.png) center / contain no-repeat;
-  mix-blend-mode: multiply;
 }
 
 html[data-theme="dark"] .jelly-loader-overlay__splash {
   mix-blend-mode: screen;
-  opacity: 0.6;
 }
 
 .jelly-loader-overlay__content {

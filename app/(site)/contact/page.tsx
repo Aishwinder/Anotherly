@@ -4,6 +4,7 @@ import { JellySectionGeo } from "@/components/jelly/JellySectionGeo";
 import { JellyReveal } from "@/components/jelly/JellyReveal";
 import { JellyDoodle } from "@/components/jelly/JellyDoodle";
 import { PageCraftMotif } from "@/components/jelly/PageCraftMotif";
+import { JellyThemeDeco } from "@/components/jelly/JellyThemeDeco";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,29 +20,9 @@ export default function ContactPage() {
         <JellyGlassSlab className="relative overflow-hidden">
           <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
           <div className="jelly-sketch-grid" aria-hidden />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--lg jelly-splash-deco--peach pointer-events-none absolute -left-[6%] -top-[8%] -z-0 opacity-[0.16]"
-            style={{ transform: "rotate(-14deg) scale(0.96)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--md jelly-splash-deco--purple pointer-events-none absolute right-[-3%] bottom-[-6%] -z-0 opacity-[0.16]"
-            style={{ transform: "rotate(22deg) scale(0.92)" }}
-            aria-hidden
-          />
-          <span
-            className="jelly-splash-deco jelly-splash-deco--xs jelly-splash-deco--mint pointer-events-none absolute right-[12%] top-[14%] -z-0 opacity-[0.18]"
-            style={{ transform: "rotate(40deg) scale(0.65)" }}
-            aria-hidden
-          />
-          <JellyDoodle
-            variant="sparkle"
-            className="jelly-doodle jelly-doodle--peach jelly-doodle-twinkle pointer-events-none absolute right-[6%] top-[10%] h-9 w-9 opacity-60"
-          />
-          <JellyDoodle
-            variant="loop"
-            className="jelly-doodle jelly-doodle--purple pointer-events-none absolute left-[6%] bottom-[12%] h-10 w-10 opacity-40"
-          />
+          <JellyThemeDeco preset="contactHero" placement="top-left" />
+          <JellyThemeDeco preset="contactAccent" placement="bottom-right" />
+          <JellyThemeDeco preset="contactStar" placement="top-right" className="hidden md:block" />
           <div className="jelly-contact-deco" aria-hidden>
             <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="jelly-contact-deco__svg">
               <path d="M24 36h52v52H24V36zm220 76h52v52h-52v-52z" stroke="currentColor" strokeWidth="1.1" opacity="0.2" />
@@ -135,10 +116,7 @@ export default function ContactPage() {
           <JellyGlassSlab className="relative overflow-hidden">
             <JellySectionBackdrop variant="aurora" className="jelly-section-backdrop--unified" />
             <JellySectionGeo variant="orbit" className="opacity-[0.07]" />
-            <span
-              className="jelly-splash-deco jelly-splash-deco--sm jelly-splash-deco--mint pointer-events-none absolute right-[3%] -top-[4%] -z-0 opacity-[0.22] rotate-[14deg]"
-              aria-hidden
-            />
+            <JellyThemeDeco preset="contactCta" placement="top-right" />
             <div id="audit" className="relative z-[1] scroll-mt-28 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
               <div className="min-w-0 max-w-xl">
                 <div className="jelly-section-title-row">
